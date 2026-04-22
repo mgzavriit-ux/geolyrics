@@ -1,0 +1,50 @@
+{
+    "name": "geolyrics/backend",
+    "description": "GeoLyrics backend platform on Yii2",
+    "keywords": ["yii2", "geolyrics", "backend", "api", "admin"],
+    "homepage": "https://geolyrics.ru/",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+        "forum": "https://www.yiiframework.com/forum/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.3",
+        "yiisoft/yii2": "^2.0.54",
+        "yiisoft/yii2-bootstrap5": "^2.0.5",
+        "yiisoft/yii2-queue": "^2.3",
+        "yiisoft/yii2-redis": "^2.0",
+        "yiisoft/yii2-symfonymailer": "^2.0.3"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "^2.1",
+        "yiisoft/yii2-faker": "^2.0",
+        "yiisoft/yii2-gii": "^2.2"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "common\\tests\\": ["common/tests/", "common/tests/_support"],
+            "backend\\tests\\": ["backend/tests/", "backend/tests/_support"],
+            "api\\tests\\": ["api/tests/", "api/tests/_support"]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer" : true
+        },
+        "process-timeout": 1800,
+        "fxp-asset": {
+            "enabled": false
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
+}

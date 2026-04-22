@@ -1,0 +1,152 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /app
+    environment:
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@geolyrics.ge}
+      API_HOST: ${API_HOST:-api.geolyrics.ge}
+      API_COOKIE_VALIDATION_KEY: ${API_COOKIE_VALIDATION_KEY:-api-change-me}
+      API_URL: ${API_URL:-https://api.geolyrics.ge}
+      BACKEND_COOKIE_VALIDATION_KEY: ${BACKEND_COOKIE_VALIDATION_KEY:-backend-change-me}
+      BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
+      BACKEND_URL: ${BACKEND_URL:-https://admin.geolyrics.ge}
+      DB_HOST: postgres
+      DB_NAME: ${DB_NAME:-geolyrics}
+      DB_PASSWORD: ${DB_PASSWORD:-geolyrics}
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-geolyrics}
+      QUEUE_CHANNEL: ${QUEUE_CHANNEL:-geolyrics.queue}
+      REDIS_DATABASE: ${REDIS_DATABASE:-0}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SENDER_EMAIL: ${SENDER_EMAIL:-noreply@geolyrics.ge}
+      SENDER_NAME: ${SENDER_NAME:-GeoLyrics}
+      STORAGE_BASE_PATH: /app/storage/uploads
+      STORAGE_BASE_URL: ${STORAGE_BASE_URL:-/uploads}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@geolyrics.ge}
+      YII_DEBUG: ${YII_DEBUG:-1}
+      YII_ENV: ${YII_ENV:-dev}
+    volumes:
+      - ./:/app
+      - ./storage:/app/storage
+    hostname: php.geolyrics.docker
+    networks:
+      geolyrics:
+        ipv4_address: ${PHP_IP:-172.21.7.11}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    working_dir: /app
+    command: sh -c "until [ -f vendor/autoload.php ]; do sleep 2; done && php yii queue/listen --verbose=1 --color=0"
+    restart: unless-stopped
+    environment:
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@geolyrics.ge}
+      API_HOST: ${API_HOST:-api.geolyrics.ge}
+      API_COOKIE_VALIDATION_KEY: ${API_COOKIE_VALIDATION_KEY:-api-change-me}
+      API_URL: ${API_URL:-https://api.geolyrics.ge}
+      BACKEND_COOKIE_VALIDATION_KEY: ${BACKEND_COOKIE_VALIDATION_KEY:-backend-change-me}
+      BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
+      BACKEND_URL: ${BACKEND_URL:-https://admin.geolyrics.ge}
+      DB_HOST: postgres
+      DB_NAME: ${DB_NAME:-geolyrics}
+      DB_PASSWORD: ${DB_PASSWORD:-geolyrics}
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-geolyrics}
+      QUEUE_CHANNEL: ${QUEUE_CHANNEL:-geolyrics.queue}
+      REDIS_DATABASE: ${REDIS_DATABASE:-0}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SENDER_EMAIL: ${SENDER_EMAIL:-noreply@geolyrics.ge}
+      SENDER_NAME: ${SENDER_NAME:-GeoLyrics}
+      STORAGE_BASE_PATH: /app/storage/uploads
+      STORAGE_BASE_URL: ${STORAGE_BASE_URL:-/uploads}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@geolyrics.ge}
+      YII_DEBUG: ${YII_DEBUG:-1}
+      YII_ENV: ${YII_ENV:-dev}
+    volumes:
+      - ./:/app
+      - ./storage:/app/storage
+    hostname: queue.geolyrics.docker
+    networks:
+      geolyrics:
+        ipv4_address: ${QUEUE_IP:-172.21.7.12}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - php
+    environment:
+      API_HOST: ${API_HOST:-api.geolyrics.ge}
+      BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    volumes:
+      - ./:/app:ro
+      - ./storage:/app/storage:ro
+      - ./docker/nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+    hostname: proxy.geolyrics.docker
+    networks:
+      geolyrics:
+        ipv4_address: ${NGINX_IP:-172.21.7.10}
+        aliases:
+          - ${API_HOST:-api.geolyrics.ge}
+          - ${BACKEND_HOST:-admin.geolyrics.ge}
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-geolyrics}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-geolyrics}
+      POSTGRES_USER: ${DB_USER:-geolyrics}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    hostname: postgres.geolyrics.docker
+    networks:
+      geolyrics:
+        ipv4_address: ${POSTGRES_IP:-172.21.7.21}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-geolyrics} -d ${DB_NAME:-geolyrics}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    hostname: redis.geolyrics.docker
+    networks:
+      geolyrics:
+        ipv4_address: ${REDIS_IP:-172.21.7.22}
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  geolyrics:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${DOCKER_SUBNET:-172.21.7.0/24}
