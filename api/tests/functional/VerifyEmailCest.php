@@ -1,10 +1,10 @@
 <?php
 
-namespace frontend\tests\functional;
+namespace api\tests\functional;
 
 use common\fixtures\UserFixture;
 use common\models\User;
-use frontend\tests\FunctionalTester;
+use api\tests\FunctionalTester;
 
 class VerifyEmailCest
 {

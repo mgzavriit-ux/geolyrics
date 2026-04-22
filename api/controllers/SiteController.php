@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace api\controllers;
 
 use yii\web\Controller;
+use yii\web\ErrorAction;
 
 final class SiteController extends Controller
 {
@@ -12,7 +13,7 @@ final class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => \yii\web\ErrorAction::class,
+                'class' => ErrorAction::class,
             ],
         ];
     }

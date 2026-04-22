@@ -2,7 +2,7 @@
 
 Backend-платформа для `geolyrics.ru` на `Yii2`:
 
-- `api` для Vue/public frontend
+- `api` для публичного приложения на Vue
 - `backend` для админки
 - `console` для миграций и фоновых задач
 - `PostgreSQL` как основная БД
