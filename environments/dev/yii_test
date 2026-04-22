@@ -23,6 +23,6 @@ $config = yii\helpers\ArrayHelper::merge(
     require __DIR__ . '/console/config/test-local.php'
 );
 
-$application = new yii\console\Application($config);
+$application = new common\app\ConsoleApplication($config);
 $exitCode = $application->run();
 exit($exitCode);

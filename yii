@@ -28,7 +28,7 @@ foreach (
     $config = yii\helpers\ArrayHelper::merge($config, require $configFile);
 }
 
-$application = new yii\console\Application($config);
+$application = new common\app\ConsoleApplication($config);
 $exitCode = $application->run();
 
 exit($exitCode);

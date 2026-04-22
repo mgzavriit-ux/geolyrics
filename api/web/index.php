@@ -27,4 +27,4 @@ foreach (
     $config = yii\helpers\ArrayHelper::merge($config, require $configFile);
 }
 
-(new yii\web\Application($config))->run();
+(new common\app\WebApplication($config))->run();

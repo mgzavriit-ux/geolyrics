@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace api\controllers;
 
+use common\app\WebApplication;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 
@@ -29,6 +30,9 @@ final class SiteController extends Controller
 
     public function actionIndex(): array
     {
+        /** @var WebApplication $app */
+        $app = \Yii::$app;
+
         return [
             'name' => 'geolyrics-api',
             'version' => 'v1',
@@ -38,11 +42,11 @@ final class SiteController extends Controller
                 '/v1/health',
             ],
             'storage' => [
-                'driver' => get_class(\Yii::$app->storage),
-                'baseUrl' => \Yii::$app->storage->baseUrl,
+                'driver' => get_class($app->storage),
+                'baseUrl' => $app->storage->getBaseUrl(),
             ],
             'queue' => [
-                'driver' => get_class(\Yii::$app->queue),
+                'driver' => get_class($app->queue),
             ],
         ];
     }

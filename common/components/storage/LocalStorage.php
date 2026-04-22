@@ -29,6 +29,11 @@ final class LocalStorage extends Component implements StorageInterface
         return rtrim($this->basePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $this->normalizePath($path);
     }
 
+    public function getBaseUrl(): string
+    {
+        return $this->baseUrl;
+    }
+
     public function getPublicUrl(string $path): string
     {
         $segments = array_map(
