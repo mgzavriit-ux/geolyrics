@@ -201,8 +201,7 @@ if ($isHidden) {
         </div>
 
         <?= $form->field($recordingModel, '[' . $recordingIndex . ']description')->textarea(['rows' => 4]) ?>
-
-        <?= $form->field($recordingModel, '[' . $recordingIndex . ']chords_text')->textarea(['rows' => 4]) ?>
+        <div class="form-text">Аккорды этой песни редактируются отдельно, в блоке аранжировок выше.</div>
     </div>
 
     <div class="border-top pt-3 mt-3">

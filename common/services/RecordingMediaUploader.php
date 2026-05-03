@@ -29,7 +29,7 @@ final class RecordingMediaUploader
         }
 
         $existingMediaAsset = $recording->coverMediaAsset;
-        $path = $this->createStoragePath($recording, $file, 'cover');
+        $path = $this->createCoverStoragePath($recording, $file);
         $this->storage->saveFile($path, $file->tempName);
 
         $mediaAsset = new MediaAsset([
@@ -72,7 +72,7 @@ final class RecordingMediaUploader
             ])
             ->all();
 
-        $path = $this->createStoragePath($recording, $file, $role);
+        $path = $this->createRecordingMediaStoragePath($recording, $file, $role);
         $this->storage->saveFile($path, $file->tempName);
 
         $mediaAsset = new MediaAsset([
@@ -101,12 +101,59 @@ final class RecordingMediaUploader
         }
     }
 
-    private function createStoragePath(Recording $recording, UploadedFile $file, string $role): string
+    private function createCoverStoragePath(Recording $recording, UploadedFile $file): string
     {
+        return $this->createStorageDirectory($recording, 'covers')
+            . '/'
+            . $this->createStorageFileName($recording, $file, 'cover');
+    }
+
+    private function createRecordingMediaStoragePath(
+        Recording $recording,
+        UploadedFile $file,
+        string $role,
+    ): string {
+        return $this->createStorageDirectory($recording, $role)
+            . '/'
+            . $this->createStorageFileName($recording, $file, $role);
+    }
+
+    private function createStorageDirectory(Recording $recording, string $directory): string
+    {
+        return 'recordings/' . $directory . '/' . $this->findSongSlug($recording);
+    }
+
+    private function createStorageFileName(
+        Recording $recording,
+        UploadedFile $file,
+        string $prefix,
+    ): string {
         $extension = strtolower((string) $file->extension);
         $suffix = bin2hex(random_bytes(6));
 
-        return 'recordings/' . $recording->slug . '/' . $role . '/' . $suffix . ($extension === '' ? '' : '.' . $extension);
+        return $recording->slug
+            . '-'
+            . $prefix
+            . '-'
+            . $suffix
+            . ($extension === '' ? '' : '.' . $extension);
+    }
+
+    private function findSongSlug(Recording $recording): string
+    {
+        $song = $recording->song;
+
+        if ($song === null) {
+            throw new RuntimeException('Cannot resolve song for recording upload.');
+        }
+
+        $songSlug = trim((string) $song->slug);
+
+        if ($songSlug === '') {
+            throw new RuntimeException('Cannot resolve song slug for recording upload.');
+        }
+
+        return $songSlug;
     }
 
     private function deleteExistingMedia(RecordingMedia $recordingMedia): void

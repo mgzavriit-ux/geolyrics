@@ -23,6 +23,7 @@ use yii\db\ActiveRecord;
  *
  * @property Language $originalLanguage
  * @property MediaAsset|null $coverMediaAsset
+ * @property SongArrangement[] $songArrangements
  * @property SongLine[] $songLines
  * @property SongTranslation[] $translations
  */
@@ -127,6 +128,12 @@ final class Song extends ActiveRecord
     public function getSongLines(): ActiveQuery
     {
         return $this->hasMany(SongLine::class, ['song_id' => 'id']);
+    }
+
+    public function getSongArrangements(): ActiveQuery
+    {
+        return $this->hasMany(SongArrangement::class, ['song_id' => 'id'])
+            ->orderBy(['sort_order' => SORT_ASC, 'id' => SORT_ASC]);
     }
 
     public function getTags(): ActiveQuery

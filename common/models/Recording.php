@@ -20,7 +20,6 @@ use yii\db\ActiveRecord;
  * @property int|null $cover_media_asset_id
  * @property int|null $release_year
  * @property int|null $duration_ms
- * @property string|null $chords_text
  * @property string|null $description
  * @property int|null $published_at
  * @property int $created_at
@@ -70,7 +69,7 @@ final class Recording extends ActiveRecord
                 },
             ],
             [['song_id', 'cover_media_asset_id', 'release_year', 'duration_ms', 'published_at'], 'integer'],
-            [['chords_text', 'description'], 'string'],
+            [['description'], 'string'],
             [['slug'], 'string', 'max' => 128],
             [['default_title'], 'string', 'max' => 255],
             [['recording_type', 'publication_status'], 'string', 'max' => 32],
@@ -103,7 +102,6 @@ final class Recording extends ActiveRecord
             'cover_media_asset_id' => 'Обложка',
             'release_year' => 'Год релиза',
             'duration_ms' => 'Длительность, мс',
-            'chords_text' => 'Аккорды',
             'description' => 'Описание',
             'published_at' => 'Дата публикации',
             'created_at' => 'Создана',
@@ -138,10 +136,6 @@ final class Recording extends ActiveRecord
         }
 
         if ($this->duration_ms !== null) {
-            return true;
-        }
-
-        if (trim((string) $this->chords_text) !== '') {
             return true;
         }
 

@@ -9,10 +9,12 @@ use common\models\Language;
 use common\models\Recording;
 use common\models\RecordingArtist;
 use common\models\Song;
+use common\models\SongArrangement;
 use common\models\SongLine;
 use common\models\SongLineTranslation;
 use common\models\SongTranslation;
 use common\services\CatalogSlugGenerator;
+use common\services\ChordSheetParser;
 use common\services\RecordingRemover;
 use common\services\RecordingMediaUploader;
 use Yii;
@@ -68,6 +70,11 @@ final class SongEditorForm extends Model
     private Recording $recordingPrototype;
     private RecordingRemover $recordingRemover;
     private Song $song;
+    /**
+     * @var SongArrangement[]
+     */
+    private array $songArrangementModels = [];
+    private ChordSheetParser $chordSheetParser;
     private CatalogSlugGenerator $slugGenerator;
     private RecordingMediaUploader $recordingMediaUploader;
 
@@ -121,6 +128,7 @@ final class SongEditorForm extends Model
         $this->languages = $languages;
         $this->recordingArtistPrototype = new RecordingArtist();
         $this->recordingPrototype = new Recording();
+        $this->chordSheetParser = new ChordSheetParser();
         $this->recordingRemover = new RecordingRemover($this->getStorage());
         $this->recordingMediaUploader = new RecordingMediaUploader($this->getStorage());
         $this->song = $song;
@@ -136,12 +144,14 @@ final class SongEditorForm extends Model
 
     public function load($data, $formName = null): bool
     {
+        $this->synchronizeSongArrangementModelsWithData($data);
         $this->synchronizeSongLineModelsWithData($data);
         $this->synchronizeRecordingModelsWithData($data);
         $this->loadRecordingDeleteFlags($data);
         $this->synchronizeRecordingArtistModelsWithData($data);
 
         $isLoaded = $this->song->load($data);
+        $isLoaded = Model::loadMultiple($this->songArrangementModels, $data) || $isLoaded;
         $isLoaded = Model::loadMultiple($this->songTranslationModels, $data) || $isLoaded;
         $isLoaded = Model::loadMultiple($this->songLineModels, $data) || $isLoaded;
         $isLoaded = Model::loadMultiple($this->songLineTranslationFlatModels, $data) || $isLoaded;
@@ -168,6 +178,7 @@ final class SongEditorForm extends Model
 
         try {
             $this->song->save(false);
+            $this->saveSongArrangements();
             $this->saveSongTranslations();
             $this->saveSongLines();
             $this->deleteOriginalLanguageTranslations();
@@ -186,6 +197,7 @@ final class SongEditorForm extends Model
         $this->prepareAutoSlugs();
 
         $isValid = $this->song->validate();
+        $isValid = $this->validateSongArrangementModels() && $isValid;
         $isValid = Model::validateMultiple($this->songTranslationModels) && $isValid;
         $isValid = Model::validateMultiple($this->songLineModels) && $isValid;
         $isValid = Model::validateMultiple($this->songLineTranslationFlatModels) && $isValid;
@@ -305,6 +317,29 @@ final class SongEditorForm extends Model
     public function getSong(): Song
     {
         return $this->song;
+    }
+
+    public function getSongArrangementFormatItems(): array
+    {
+        return (new SongArrangement())->getSourceFormatList();
+    }
+
+    public function getSongArrangementModels(): array
+    {
+        return $this->songArrangementModels;
+    }
+
+    public function getSongArrangementVisibleIndexes(): array
+    {
+        $indexes = [];
+
+        foreach (array_keys($this->songArrangementModels) as $arrangementIndex) {
+            if ($this->shouldRenderSongArrangement($arrangementIndex)) {
+                $indexes[] = $arrangementIndex;
+            }
+        }
+
+        return $indexes;
     }
 
     public function getSongTranslationInputIndex(int $languageId): int | null
@@ -465,6 +500,15 @@ final class SongEditorForm extends Model
         return false;
     }
 
+    public function shouldRenderSongArrangement(int $arrangementIndex): bool
+    {
+        if ($this->isSongArrangementFilled($arrangementIndex)) {
+            return true;
+        }
+
+        return $this->songArrangementModels[$arrangementIndex]->hasErrors();
+    }
+
     public function shouldRenderSongLine(int $lineIndex): bool
     {
         if ($this->isSongLineFilled($lineIndex)) {
@@ -512,6 +556,19 @@ final class SongEditorForm extends Model
         return $models;
     }
 
+    private function createEmptySongArrangementModels(int $count): array
+    {
+        $models = [];
+
+        for ($index = 0; $index < $count; ++$index) {
+            $model = new SongArrangement();
+            $model->source_format = SongArrangement::FORMAT_CHORD_PRO;
+            $models[] = $model;
+        }
+
+        return $models;
+    }
+
     private function createEmptySongLineModels(int $count): array
     {
         $models = [];
@@ -552,6 +609,18 @@ final class SongEditorForm extends Model
         }
 
         return $models;
+    }
+
+    private function findSongArrangementModels(): array
+    {
+        if ($this->song->isNewRecord) {
+            return [];
+        }
+
+        return SongArrangement::find()
+            ->andWhere(['song_id' => $this->song->id])
+            ->orderBy(['sort_order' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
     }
 
     private function findSongLineModels(): array
@@ -673,9 +742,15 @@ final class SongEditorForm extends Model
 
     private function initializeModels(): void
     {
+        $this->initializeSongArrangementModels();
         $this->initializeSongTranslationModels();
         $this->initializeSongLineModels();
         $this->initializeRecordingModels();
+    }
+
+    private function initializeSongArrangementModels(): void
+    {
+        $this->songArrangementModels = array_values($this->findSongArrangementModels());
     }
 
     private function initializeRecordingArtistModels(): void
@@ -747,6 +822,11 @@ final class SongEditorForm extends Model
             || $this->getRecordingMediaUploadForm($recordingIndex)->hasContent();
     }
 
+    private function isSongArrangementFilled(int $arrangementIndex): bool
+    {
+        return $this->songArrangementModels[$arrangementIndex]->hasContent();
+    }
+
     private function isSongLineFilled(int $lineIndex): bool
     {
         return $this->songLineModels[$lineIndex]->hasContent() || $this->hasLineTranslationContent($lineIndex);
@@ -758,6 +838,24 @@ final class SongEditorForm extends Model
 
         if (trim((string) $this->song->publication_status) === '') {
             $this->song->publication_status = Song::PUBLICATION_STATUS_DRAFT;
+        }
+
+        $arrangementNumber = 1;
+
+        foreach ($this->songArrangementModels as $arrangementIndex => $arrangementModel) {
+            if ($this->isSongArrangementFilled($arrangementIndex) === false) {
+                continue;
+            }
+
+            if (trim((string) $arrangementModel->source_format) === '') {
+                $arrangementModel->source_format = SongArrangement::FORMAT_CHORD_PRO;
+            }
+
+            if (trim((string) $arrangementModel->title) === '') {
+                $arrangementModel->title = 'Аранжировка ' . $arrangementNumber;
+            }
+
+            ++$arrangementNumber;
         }
 
         foreach ($this->recordingModels as $recordingIndex => $recordingModel) {
@@ -863,6 +961,24 @@ final class SongEditorForm extends Model
 
             $translationModel->song_line_id = $lineModel->id;
             $translationModel->save(false);
+        }
+    }
+
+    private function saveSongArrangements(): void
+    {
+        foreach ($this->songArrangementModels as $arrangementIndex => $arrangementModel) {
+            if ($this->isSongArrangementFilled($arrangementIndex) === false) {
+                if ($arrangementModel->isNewRecord === false) {
+                    $arrangementModel->delete();
+                }
+
+                continue;
+            }
+
+            $arrangementModel->song_id = $this->song->id;
+            $arrangementModel->sort_order = ($arrangementIndex + 1) * 10;
+            $arrangementModel->parsed_payload = $this->encodeArrangementPayload($arrangementModel);
+            $arrangementModel->save(false);
         }
     }
 
@@ -1004,6 +1120,28 @@ final class SongEditorForm extends Model
         return $isValid;
     }
 
+    private function validateSongArrangementModels(): bool
+    {
+        $isValid = true;
+
+        foreach ($this->songArrangementModels as $arrangementIndex => $arrangementModel) {
+            if ($this->isSongArrangementFilled($arrangementIndex) === false) {
+                continue;
+            }
+
+            if ($arrangementModel->validate() === false) {
+                $isValid = false;
+            }
+
+            if (trim((string) $arrangementModel->source_text) === '') {
+                $arrangementModel->addError('source_text', 'Укажи текст аккордов.');
+                $isValid = false;
+            }
+        }
+
+        return $isValid;
+    }
+
     private function validateSongLineModels(): bool
     {
         $isValid = true;
@@ -1086,6 +1224,30 @@ final class SongEditorForm extends Model
         $this->rebuildSongLineTranslationModels();
     }
 
+    private function synchronizeSongArrangementModelsWithData(array $data): void
+    {
+        $formName = (new SongArrangement())->formName();
+        $postedArrangementRows = $data[$formName] ?? null;
+
+        if (is_array($postedArrangementRows) === false) {
+            return;
+        }
+
+        $existingArrangementModels = $this->songArrangementModels;
+        $this->songArrangementModels = [];
+
+        foreach ($postedArrangementRows as $arrangementIndex => $_row) {
+            $arrangementIndex = (int) $arrangementIndex;
+            $arrangementModel = $existingArrangementModels[$arrangementIndex] ?? new SongArrangement();
+
+            if (trim((string) $arrangementModel->source_format) === '') {
+                $arrangementModel->source_format = SongArrangement::FORMAT_CHORD_PRO;
+            }
+
+            $this->songArrangementModels[$arrangementIndex] = $arrangementModel;
+        }
+    }
+
     private function synchronizeRecordingArtistModelsWithData(array $data): void
     {
         $formName = (new RecordingArtist())->formName();
@@ -1149,6 +1311,16 @@ final class SongEditorForm extends Model
         foreach (array_keys($this->recordingModels) as $recordingIndex) {
             $this->recordingDeleteFlags[$recordingIndex] = ((string) ($postedDeleteFlags[$recordingIndex] ?? '0')) === '1';
         }
+    }
+
+    private function encodeArrangementPayload(SongArrangement $arrangementModel): string
+    {
+        $payload = $this->chordSheetParser->parse(
+            (string) $arrangementModel->source_format,
+            (string) $arrangementModel->source_text,
+        );
+
+        return (string) json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 
     private function shouldRenderRecordingArtist(int $artistFlatIndex): bool

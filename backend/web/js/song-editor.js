@@ -9,6 +9,8 @@
         const translationPanels = root.querySelector('[data-role="translation-panels"]');
         const songTextLanguageSelect = root.querySelector('[data-role="song-text-language-select"]');
         const songTextPanels = root.querySelector('[data-role="song-text-panels"]');
+        const addSongArrangementButton = root.querySelector('[data-role="add-song-arrangement"]');
+        const songArrangementItems = root.querySelector('[data-role="song-arrangement-items"]');
         const addSongLineButton = root.querySelector('[data-role="add-song-line"]');
         const addRecordingButton = root.querySelector('[data-role="add-recording"]');
         const recordingItems = root.querySelector('[data-role="recording-items"]');
@@ -39,6 +41,10 @@
 
         if (songLineItems !== null) {
             initializeSongLineManager(root, songLineItems, addSongLineButton);
+        }
+
+        if (songArrangementItems !== null) {
+            initializeSongArrangementManager(root, songArrangementItems, addSongArrangementButton);
         }
 
         if (recordingItems !== null) {
@@ -79,6 +85,19 @@
 
         clearRecordingArtistItem(item);
         updateRecordingPresentation(root);
+
+        return item;
+    }
+
+    function addSongArrangementItem(root, songArrangementItems) {
+        const item = createSongArrangementItemFromTemplate(root, songArrangementItems);
+
+        if (item === null) {
+            return null;
+        }
+
+        clearSongArrangementItem(item);
+        updateSongArrangementPresentation(root);
 
         return item;
     }
@@ -175,6 +194,32 @@
             };
             request.send();
         });
+    }
+
+    function initializeSongArrangementManager(root, songArrangementItems, addSongArrangementButton) {
+        if (addSongArrangementButton !== null) {
+            addSongArrangementButton.addEventListener('click', function () {
+                addSongArrangementItem(root, songArrangementItems);
+            });
+        }
+
+        root.addEventListener('click', function (event) {
+            const button = event.target.closest('[data-role="remove-song-arrangement"]');
+
+            if (button === null) {
+                return;
+            }
+
+            const arrangementItem = button.closest('[data-role="song-arrangement-item"]');
+
+            if (arrangementItem === null) {
+                return;
+            }
+
+            removeSongArrangementItem(root, arrangementItem);
+        });
+
+        updateSongArrangementPresentation(root);
     }
 
     function initializeRecordingManager(root, recordingItems, addRecordingButton) {
@@ -311,6 +356,31 @@
 
         songLineItems.appendChild(item);
         songLineItems.dataset.nextLineIndex = String(lineIndex + 1);
+
+        return item;
+    }
+
+    function createSongArrangementItemFromTemplate(root, songArrangementItems) {
+        const template = root.querySelector('template[data-role="song-arrangement-template"]');
+
+        if (template === null) {
+            return null;
+        }
+
+        const arrangementIndex = Number(songArrangementItems.dataset.nextArrangementIndex || '0');
+        const html = template.innerHTML.replaceAll('__arrangement_index__', String(arrangementIndex));
+        const container = document.createElement('div');
+
+        container.innerHTML = html.trim();
+
+        if (container.firstElementChild === null) {
+            return null;
+        }
+
+        const item = container.firstElementChild;
+
+        songArrangementItems.appendChild(item);
+        songArrangementItems.dataset.nextArrangementIndex = String(arrangementIndex + 1);
 
         return item;
     }
@@ -452,6 +522,21 @@
         }
     }
 
+    function clearSongArrangementItem(item) {
+        item.querySelectorAll('input, textarea, select').forEach(function (input) {
+            if (input.type === 'hidden' && input.name.indexOf('[id]') !== -1) {
+                return;
+            }
+
+            if (input.tagName === 'SELECT') {
+                input.selectedIndex = 0;
+                return;
+            }
+
+            input.value = '';
+        });
+    }
+
     function clearRecordingArtistItem(item) {
         item.querySelectorAll('input, textarea, select').forEach(function (input) {
             if (input.type === 'hidden') {
@@ -465,6 +550,16 @@
 
             input.value = '';
         });
+    }
+
+    function removeSongArrangementItem(root, arrangementItem) {
+        if (window.confirm('Удалить эту аранжировку?') === false) {
+            return;
+        }
+
+        clearSongArrangementItem(arrangementItem);
+        arrangementItem.classList.add('d-none');
+        updateSongArrangementPresentation(root);
     }
 
     function clearRecordingItem(item) {
@@ -519,6 +614,12 @@
         });
     }
 
+    function getVisibleSongArrangementItems(songArrangementItems) {
+        return Array.from(songArrangementItems.querySelectorAll('[data-role="song-arrangement-item"]')).filter(function (item) {
+            return item.classList.contains('d-none') === false;
+        });
+    }
+
     function getVisibleRecordingItems(recordingItems) {
         return Array.from(recordingItems.querySelectorAll('[data-role="recording-item"]')).filter(function (item) {
             return item.classList.contains('d-none') === false;
@@ -531,6 +632,29 @@
 
         if (emptyState !== null) {
             emptyState.classList.toggle('d-none', visibleArtistItems.length > 0);
+        }
+    }
+
+    function updateSongArrangementPresentation(root) {
+        const songArrangementItems = root.querySelector('[data-role="song-arrangement-items"]');
+        const emptyState = root.querySelector('[data-role="song-arrangement-empty-state"]');
+
+        if (songArrangementItems === null) {
+            return;
+        }
+
+        const visibleItems = getVisibleSongArrangementItems(songArrangementItems);
+
+        visibleItems.forEach(function (item, index) {
+            const title = item.querySelector('[data-role="song-arrangement-title"]');
+
+            if (title !== null) {
+                title.textContent = 'Аранжировка ' + (index + 1);
+            }
+        });
+
+        if (emptyState !== null) {
+            emptyState.classList.toggle('d-none', visibleItems.length > 0);
         }
     }
 

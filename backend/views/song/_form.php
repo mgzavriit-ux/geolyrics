@@ -23,6 +23,8 @@ $songTranslationLanguageItems = $formModel->getSongTranslationLanguageItems();
 $initialSongTranslationLanguageId = $formModel->getInitialSongTranslationLanguageId();
 $songTextLanguageItems = $formModel->getSongTextLanguageItems();
 $initialSongTextLanguageId = $formModel->getInitialSongTextLanguageId();
+$songArrangementModels = $formModel->getSongArrangementModels();
+$songArrangementVisibleIndexes = $formModel->getSongArrangementVisibleIndexes();
 $songLineModels = $formModel->getSongLineModels();
 $songLineVisibleIndexes = $formModel->getSongLineVisibleIndexes();
 $songLineTranslationLanguageItems = $formModel->getSongLineTranslationLanguageItems();
@@ -32,6 +34,7 @@ $recordingVisibleIndexes = $formModel->getRecordingVisibleIndexes();
 $recordingArtistFlatModels = $formModel->getRecordingArtistFlatModels();
 $preloadAllSongTranslationPanels = \Yii::$app->request->isPost;
 $preloadAllSongTextPanels = \Yii::$app->request->isPost;
+$renderAllSongArrangementModels = \Yii::$app->request->isPost;
 $renderAllSongLineModels = \Yii::$app->request->isPost;
 $renderAllRecordingModels = \Yii::$app->request->isPost;
 $translationFieldsUrl = Url::to(['/song/translation-fields']);
@@ -48,10 +51,13 @@ foreach (array_keys($songLineTranslationLanguageItems) as $translationOffset => 
     $songLineTemplateTranslationIndexes[$languageId] = '__translation_index_' . $translationOffset . '__';
 }
 
+$songArrangementTemplateModel = new \common\models\SongArrangement();
+$songArrangementTemplateModel->source_format = \common\models\SongArrangement::FORMAT_CHORD_PRO;
 $recordingTemplateModel = new \common\models\Recording();
 $recordingTemplateModel->scenario = \common\models\Recording::SCENARIO_EMBEDDED_SONG;
 $recordingArtistTemplateModel = new \common\models\RecordingArtist();
 $recordingMediaUploadTemplateForm = new RecordingMediaUploadForm();
+$nextSongArrangementIndex = $songArrangementModels === [] ? 0 : max(array_keys($songArrangementModels)) + 1;
 $nextRecordingIndex = $recordingModels === [] ? 0 : max(array_keys($recordingModels)) + 1;
 $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(array_keys($recordingArtistFlatModels)) + 1;
 ?>
@@ -286,6 +292,59 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="border rounded p-3 mb-4">
+        <h2 class="h4">Аранжировки и аккорды</h2>
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-3">
+            <p class="text-muted mb-0">Аккорды теперь хранятся на уровне песни. Если у одной песни несколько гармонических вариантов, оформи их как отдельные аранжировки.</p>
+            <div>
+                <?= Html::button('Добавить аранжировку', [
+                    'class' => 'btn btn-outline-secondary',
+                    'type' => 'button',
+                    'data-role' => 'add-song-arrangement',
+                ]) ?>
+            </div>
+        </div>
+
+        <div
+            data-role="song-arrangement-items"
+            data-next-arrangement-index="<?= Html::encode((string) $nextSongArrangementIndex) ?>"
+        >
+            <?php foreach (array_keys($songArrangementModels) as $arrangementIndex): ?>
+                <?php
+                $isVisibleArrangement = $formModel->shouldRenderSongArrangement($arrangementIndex);
+
+                if ($renderAllSongArrangementModels === false && $isVisibleArrangement === false) {
+                    continue;
+                }
+                ?>
+                <?= $this->render('_song_arrangement_fields', [
+                    'form' => $form,
+                    'arrangementIndex' => $arrangementIndex,
+                    'arrangementModel' => $songArrangementModels[$arrangementIndex],
+                    'formatItems' => $formModel->getSongArrangementFormatItems(),
+                    'isHidden' => $isVisibleArrangement === false,
+                ]) ?>
+            <?php endforeach; ?>
+        </div>
+
+        <div
+            class="text-muted<?= $songArrangementVisibleIndexes === [] ? '' : ' d-none' ?>"
+            data-role="song-arrangement-empty-state"
+        >
+            Аранжировок пока нет. Добавь первую, если для песни нужны аккорды.
+        </div>
+
+        <template data-role="song-arrangement-template">
+            <?= $this->render('_song_arrangement_fields', [
+                'form' => $form,
+                'arrangementIndex' => '__arrangement_index__',
+                'arrangementModel' => $songArrangementTemplateModel,
+                'formatItems' => $formModel->getSongArrangementFormatItems(),
+                'isHidden' => false,
+            ]) ?>
+        </template>
     </div>
 
     <div class="border rounded p-3 mb-4">

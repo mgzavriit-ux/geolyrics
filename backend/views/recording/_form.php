@@ -175,8 +175,7 @@ $formatter = \Yii::$app->formatter;
         </div>
 
         <?= $form->field($model, 'description')->textarea(['rows' => 5]) ?>
-
-        <?= $form->field($model, 'chords_text')->textarea(['rows' => 5]) ?>
+        <div class="form-text">Аккорды теперь ведутся на уровне песни, в блоке аранжировок внутри редактора песни.</div>
     </div>
 
     <div class="form-group mt-3">
