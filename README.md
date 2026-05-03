@@ -74,7 +74,9 @@ docker compose exec php php yii user/create-admin admin admin@example.com Strong
 - `http://api.geolyrics.ge`
 - `http://admin.geolyrics.ge`
 
-Важно: на `Docker Desktop` для macOS/Windows IP контейнеров из bridge-сети обычно не маршрутизируются с хоста. В таком окружении домены в `/etc/hosts` лучше маппить на `127.0.0.1`, а доступ оставлять через опубликованный порт:
+Важно: локально в проекте TLS не настроен, поэтому домены нужно открывать именно по `http`, а не по `https`.
+
+Важно: на `Docker Desktop` для macOS/Windows IP контейнеров из bridge-сети обычно не маршрутизируются с хоста. В таком окружении домены в `/etc/hosts` нужно маппить на `127.0.0.1`:
 
 ```text
 127.0.0.1 api.geolyrics.ge
@@ -83,8 +85,8 @@ docker compose exec php php yii user/create-admin admin admin@example.com Strong
 
 Тогда локально использовать:
 
-- `http://api.geolyrics.ge:8080/`
-- `http://admin.geolyrics.ge:8080/`
+- `http://api.geolyrics.ge/`
+- `http://admin.geolyrics.ge/`
 
 ## Локальное хранилище
 

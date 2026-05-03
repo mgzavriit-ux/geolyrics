@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace backend\controllers;
 
+use backend\models\SongEditorForm;
+use common\models\Artist;
 use backend\models\SongSearch;
 use common\models\Language;
 use common\models\Song;
@@ -22,6 +24,8 @@ final class SongController extends AdminController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['post'],
+                    'translation-fields' => ['get'],
+                    'text-fields' => ['get'],
                 ],
             ],
         ]);
@@ -29,19 +33,7 @@ final class SongController extends AdminController
 
     public function actionCreate(): string|Response
     {
-        $model = new Song();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Песня сохранена.');
-
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-            'languageItems' => $this->findLanguageItems(),
-            'publicationStatusItems' => $model->getPublicationStatusList(),
-        ]);
+        return $this->handleForm(new Song(), 'create', 'Песня сохранена.');
     }
 
     public function actionDelete(int $id): Response
@@ -66,21 +58,48 @@ final class SongController extends AdminController
         ]);
     }
 
-    public function actionUpdate(int $id): string|Response
+    public function actionTranslationFields(int $languageId, int | null $id = null): string
     {
-        $model = $this->findModel($id);
+        $song = $id === null ? new Song() : $this->findModel($id);
+        $formModel = $this->createFormModel($song);
+        $translationModel = $formModel->getSongTranslationModelByLanguageId($languageId);
+        $translationIndex = $formModel->getSongTranslationInputIndex($languageId);
+        $languageLabel = $formModel->getSongTranslationLanguageItems()[$languageId] ?? null;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Песня обновлена.');
-
-            return $this->redirect(['index']);
+        if ($translationModel === null || $translationIndex === null || $languageLabel === null) {
+            throw new NotFoundHttpException('Перевод для выбранного языка не найден.');
         }
 
-        return $this->render('update', [
-            'model' => $model,
-            'languageItems' => $this->findLanguageItems(),
-            'publicationStatusItems' => $model->getPublicationStatusList(),
+        return $this->renderPartial('_translation_fields', [
+            'languageId' => $languageId,
+            'languageLabel' => $languageLabel,
+            'isVisible' => true,
+            'translationIndex' => $translationIndex,
+            'translationModel' => $translationModel,
         ]);
+    }
+
+    public function actionTextFields(int $languageId, int | null $id = null): string
+    {
+        $song = $id === null ? new Song() : $this->findModel($id);
+        $formModel = $this->createFormModel($song);
+        $languageLabel = $formModel->getSongTextLanguageItems()[$languageId] ?? null;
+
+        if ($languageLabel === null) {
+            throw new NotFoundHttpException('Текст для выбранного языка не найден.');
+        }
+
+        return $this->renderPartial('_song_text_fields', [
+            'languageId' => $languageId,
+            'languageLabel' => $languageLabel,
+            'isVisible' => true,
+            'textValue' => $formModel->getSongTextValueByLanguageId($languageId),
+        ]);
+    }
+
+    public function actionUpdate(int $id): string|Response
+    {
+        return $this->handleForm($this->findModel($id), 'update', 'Песня обновлена.');
     }
 
     private function findLanguageItems(): array
@@ -92,6 +111,27 @@ final class SongController extends AdminController
             ->column();
     }
 
+    /**
+     * @return Artist[]
+     */
+    private function findArtists(): array
+    {
+        return Artist::find()
+            ->orderBy(['default_name' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
+    }
+
+    /**
+     * @return Language[]
+     */
+    private function findLanguages(): array
+    {
+        return Language::find()
+            ->andWhere(['is_active' => true])
+            ->orderBy(['sort_order' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
+    }
+
     private function findModel(int $id): Song
     {
         $model = Song::find()->with(['originalLanguage'])->andWhere(['id' => $id])->one();
@@ -101,5 +141,26 @@ final class SongController extends AdminController
         }
 
         throw new NotFoundHttpException('Песня не найдена.');
+    }
+
+    private function handleForm(Song $song, string $view, string $successMessage): string|Response
+    {
+        $formModel = $this->createFormModel($song);
+
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()) {
+            $formModel->save();
+            Yii::$app->session->setFlash('success', $successMessage);
+
+            return $this->redirect(['update', 'id' => $formModel->getSong()->id]);
+        }
+
+        return $this->render($view, [
+            'formModel' => $formModel,
+        ]);
+    }
+
+    private function createFormModel(Song $song): SongEditorForm
+    {
+        return new SongEditorForm($song, $this->findLanguages(), $this->findArtists());
     }
 }

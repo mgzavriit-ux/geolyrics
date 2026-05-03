@@ -8,10 +8,10 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@geolyrics.ge}
       API_HOST: ${API_HOST:-api.geolyrics.ge}
       API_COOKIE_VALIDATION_KEY: ${API_COOKIE_VALIDATION_KEY:-api-change-me}
-      API_URL: ${API_URL:-https://api.geolyrics.ge}
+      API_URL: ${API_URL:-http://api.geolyrics.ge}
       BACKEND_COOKIE_VALIDATION_KEY: ${BACKEND_COOKIE_VALIDATION_KEY:-backend-change-me}
       BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
-      BACKEND_URL: ${BACKEND_URL:-https://admin.geolyrics.ge}
+      BACKEND_URL: ${BACKEND_URL:-http://admin.geolyrics.ge}
       DB_HOST: postgres
       DB_NAME: ${DB_NAME:-geolyrics}
       DB_PASSWORD: ${DB_PASSWORD:-geolyrics}
@@ -52,10 +52,10 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@geolyrics.ge}
       API_HOST: ${API_HOST:-api.geolyrics.ge}
       API_COOKIE_VALIDATION_KEY: ${API_COOKIE_VALIDATION_KEY:-api-change-me}
-      API_URL: ${API_URL:-https://api.geolyrics.ge}
+      API_URL: ${API_URL:-http://api.geolyrics.ge}
       BACKEND_COOKIE_VALIDATION_KEY: ${BACKEND_COOKIE_VALIDATION_KEY:-backend-change-me}
       BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
-      BACKEND_URL: ${BACKEND_URL:-https://admin.geolyrics.ge}
+      BACKEND_URL: ${BACKEND_URL:-http://admin.geolyrics.ge}
       DB_HOST: postgres
       DB_NAME: ${DB_NAME:-geolyrics}
       DB_PASSWORD: ${DB_PASSWORD:-geolyrics}
@@ -93,7 +93,7 @@ services:
       API_HOST: ${API_HOST:-api.geolyrics.ge}
       BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
     ports:
-      - "${HTTP_PORT:-8080}:80"
+      - "${HTTP_PORT:-80}:80"
     volumes:
       - ./:/app:ro
       - ./storage:/app/storage:ro

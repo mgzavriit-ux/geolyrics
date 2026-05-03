@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 /** @var yii\web\View $this */
 /** @var common\models\Recording $model */
+/** @var backend\models\RecordingMediaUploadForm $uploadForm */
 /** @var array $publicationStatusItems */
 /** @var array $recordingTypeItems */
 /** @var array $songItems */
@@ -17,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'uploadForm' => $uploadForm,
         'publicationStatusItems' => $publicationStatusItems,
         'recordingTypeItems' => $recordingTypeItems,
         'songItems' => $songItems,

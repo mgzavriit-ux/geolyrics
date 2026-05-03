@@ -25,7 +25,15 @@ use yii\bootstrap5\Html;
 
     <?= $form->field($model, 'publication_status')->dropDownList($publicationStatusItems, ['prompt' => 'Выберите статус']) ?>
 
-    <?= $form->field($model, 'published_at')->input('number') ?>
+    <div class="mb-3">
+        <?= Html::activeLabel($model, 'published_at', ['class' => 'form-label']) ?>
+        <?= Html::textInput('artistPublishedAtDisplay', $model->getPublishedAtFormatted(), [
+            'class' => 'form-control',
+            'readonly' => true,
+            'disabled' => true,
+        ]) ?>
+        <div class="form-text">Дата выставляется автоматически при первом сохранении со статусом «Опубликован».</div>
+    </div>
 
     <hr class="my-4">
 

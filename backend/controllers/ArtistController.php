@@ -10,6 +10,7 @@ use common\models\ArtistTranslation;
 use common\models\Language;
 use Yii;
 use yii\base\Model;
+use yii\db\IntegrityException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -53,8 +54,15 @@ final class ArtistController extends AdminController
 
     public function actionDelete(int $id): Response
     {
-        $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', 'Исполнитель удален.');
+        try {
+            $this->findModel($id)->delete();
+            Yii::$app->session->setFlash('success', 'Исполнитель удален.');
+        } catch (IntegrityException) {
+            Yii::$app->session->setFlash(
+                'warning',
+                'Исполнителя нельзя удалить, пока он связан с песнями или записями. Сначала удалите или отвяжите связанные сущности.',
+            );
+        }
 
         return $this->redirect(['index']);
     }

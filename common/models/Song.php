@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace common\models;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -21,6 +23,8 @@ use yii\db\ActiveRecord;
  *
  * @property Language $originalLanguage
  * @property MediaAsset|null $coverMediaAsset
+ * @property SongLine[] $songLines
+ * @property SongTranslation[] $translations
  */
 final class Song extends ActiveRecord
 {
@@ -42,7 +46,7 @@ final class Song extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['original_language_id', 'slug', 'default_title'], 'required'],
+            [['original_language_id', 'default_title'], 'required'],
             [
                 ['cover_media_asset_id', 'published_at'],
                 'filter',
@@ -89,6 +93,17 @@ final class Song extends ActiveRecord
         ];
     }
 
+    public function getPublishedAtFormatted(): string
+    {
+        if ($this->published_at === null) {
+            return '';
+        }
+
+        return (new DateTimeImmutable('@' . (string) $this->published_at))
+            ->setTimezone(new DateTimeZone(date_default_timezone_get()))
+            ->format('d.m.Y H:i:s');
+    }
+
     public function getAuthors(): ActiveQuery
     {
         return $this->hasMany(Artist::class, ['id' => 'artist_id'])->viaTable('{{%song_author}}', ['song_id' => 'id']);
@@ -109,8 +124,47 @@ final class Song extends ActiveRecord
         return $this->hasMany(Recording::class, ['song_id' => 'id']);
     }
 
+    public function getSongLines(): ActiveQuery
+    {
+        return $this->hasMany(SongLine::class, ['song_id' => 'id']);
+    }
+
     public function getTags(): ActiveQuery
     {
         return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable('{{%song_tag}}', ['song_id' => 'id']);
+    }
+
+    public function getTranslations(): ActiveQuery
+    {
+        return $this->hasMany(SongTranslation::class, ['song_id' => 'id']);
+    }
+
+    public function beforeSave($insert): bool
+    {
+        if (parent::beforeSave($insert) === false) {
+            return false;
+        }
+
+        $this->applyPublishedAtValue();
+
+        return true;
+    }
+
+    private function applyPublishedAtValue(): void
+    {
+        if ($this->publication_status !== self::PUBLICATION_STATUS_PUBLISHED) {
+            return;
+        }
+
+        if ($this->published_at !== null) {
+            return;
+        }
+
+        $this->published_at = $this->getCurrentTimestamp();
+    }
+
+    private function getCurrentTimestamp(): int
+    {
+        return time();
     }
 }

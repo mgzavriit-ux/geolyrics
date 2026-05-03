@@ -41,6 +41,7 @@ AppAsset::register($this);
 
     if (Yii::$app->user->isGuest === false) {
         $menuItems[] = ['label' => 'Языки', 'url' => ['/language/index']];
+        $menuItems[] = ['label' => 'Транслитерация', 'url' => ['/transliteration/index']];
         $menuItems[] = ['label' => 'Исполнители', 'url' => ['/artist/index']];
         $menuItems[] = ['label' => 'Песни', 'url' => ['/song/index']];
         $menuItems[] = ['label' => 'Записи', 'url' => ['/recording/index']];

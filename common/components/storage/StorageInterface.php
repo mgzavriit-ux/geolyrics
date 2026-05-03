@@ -12,6 +12,8 @@ interface StorageInterface
 
     public function getBaseUrl(): string;
 
+    public function getStorageName(): string;
+
     public function getPublicUrl(string $path): string;
 
     public function has(string $path): bool;

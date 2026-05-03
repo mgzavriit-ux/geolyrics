@@ -1,0 +1,566 @@
+[
+  {
+    "legacy_category_id": 15,
+    "slug": "mgzavrebi",
+    "type": "group",
+    "default_name": "მგზავრები",
+    "translations": {
+      "ru": {
+        "name": "Мгзавреби",
+        "biography": "<p>Мгзавреби (груз. მგზავრები — «странники», «путники» или «пассажиры») — популярная грузинская музыкальная группа, чей стиль стал настоящим явлением в современной музыке.</p>\n\n<p>Основные факты: Основание: Группа была создана в 2006 году в Тбилиси. Изначально коллектив задумывался как трио, но со временем вырос в полноценный ансамбль.</p>\n\n<p>Фронтмен: Лидер и основатель группы — Гиги Дедаламазишвили. По образованию он актер, что во многом объясняет театральность, эмоциональность и искренность выступлений группы.</p>"
+      },
+      "en": {
+        "name": "Mgzavrebi",
+        "biography": "<p>Mgzavrebi (Georgian: მგზავრები — \"travelers\", \"wanderers\", or \"passengers\") is a popular Georgian band whose style has become a true phenomenon in contemporary music.</p>\n\n<p>Key Facts: Foundation: The band was formed in 2006 in Tbilisi. It started as a trio but eventually grew into a full ensemble.</p>\n\n<p>Frontman: The leader and founder is Gigi Dedalamazishvili. He is an actor by training, which explains the theatricality, emotional depth, and sincerity of the band's performances.</p>"
+      },
+      "ka": {
+        "name": "მგზავრები",
+        "biography": "<p>მგზავრები - პოპულარული ქართული მუსიკალური ჯგუფი, რომლის სტილიც თანამედროვე მუსიკაში ნამდვილ ფენომენად იქცა.</p>\n\n<p>ძირითადი ფაქტები: დაარსება: ჯგუფი დაარსდა 2006 წელს თბილისში. თავდაპირველად კოლექტივი ტრიოდ იყო ჩაფიქრებული, მაგრამ დროთა განმავლობაში სრულფასოვან ანსამბლად გადაიქცა.</p>\n\n<p>ფრონტმენი: ჯგუფის ლიდერი და დამფუძნებელი არის გიგი დედალამაზიშვილი. განათლებით იგი მსახიობია, რაც დიდწილად ხსნის ჯგუფის გამოსვლების თეატრალურობას.</p>"
+      },
+      "fr": {
+        "name": "Mgzavrebi",
+        "biography": "<p>Mgzavrebi (géorgien : მგზავრები — « voyageurs », « vagabonds » ou « passagers ») est un groupe de musique géorgien populaire dont le style est devenu un véritable phénomène dans la musique contemporaine.</p>\n\n<p>Faits saillants : Fondation : Le groupe a été formé en 2006 à Tbilissi. Initialement conçu comme un trio, il s'est transformé au fil du temps en un ensemble complet.</p>\n\n<p>Frontman : Le leader et fondateur du groupe est Gigi Dedalamazishvili. Il est acteur de formation, ce qui explique la théâtralité de leurs performances.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 16,
+    "slug": "kikabidze-vakhtang",
+    "type": "person",
+    "default_name": "ვახტანგ კიკაბიძე",
+    "translations": {
+      "ru": {
+        "name": "Вахтанг Кикабидзе",
+        "biography": "<p>Вахтанг Кикабидзе - советский и грузинский певец и актер, покоривший сердца публики своей искренностью и теплотой голоса. Его песни «Мои года - мое богатство» до сих пор любимы многими.</p>"
+      },
+      "en": {
+        "name": "Vakhtang Kikabidze",
+        "biography": "<p>Vakhtang Kikabidze was a legendary Soviet and Georgian singer, actor, and director. He conquered the audience's hearts with his sincerity and warm voice. His songs like \"My years are my wealth\" remain timeless classics.</p>"
+      },
+      "ka": {
+        "name": "ვახტანგ კიკაბიძე",
+        "biography": "<p>ვახტანგ კიკაბიძე — საბჭოთა და ქართველი მომღერალი, მსახიობი და რეჟისორი, რომელმაც მაყურებლის გული თავისი გულწრფელობითა და ხმის სითბოთი დაიპყრო. მისი სიმღერები ქართული კულტურის განუყოფელი ნაწილია.</p>"
+      },
+      "fr": {
+        "name": "Vakhtang Kikabidze",
+        "biography": "<p>Vakhtang Kikabidze était un chanteur, acteur et réalisateur soviétique et géorgien légendaire. Il a conquis le cœur du public par sa sincérité et la chaleur de sa voix. Ses chansons restent des classiques indémodables.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 17,
+    "slug": "folk",
+    "type": "group",
+    "default_name": "ქართული ხალხური",
+    "translations": {
+      "ru": {
+        "name": "Народные песни",
+        "biography": "<p>Грузинская музыка - это музыкальный феномен, отличающийся от любой другой полифонии своим качеством и сущностью. Грузинское многоголосие признано ЮНЕСКО шедевром устного нематериального наследия.</p>"
+      },
+      "en": {
+        "name": "Georgian Folk Songs",
+        "biography": "<p>Georgian music is a musical phenomenon, distinguished from any other polyphony by its quality and essence. Georgian polyphony is recognized by UNESCO as a masterpiece of the oral intangible heritage of humanity.</p>"
+      },
+      "ka": {
+        "name": "ქართული ხალხური",
+        "biography": "<p>ქართული მუსიკა არის მუსიკალური ფენომენი, რომელიც განსხვავდება ნებისმიერი სხვა პოლიფონიისგან თავისი ხარისხითა და არსით. ქართული მრავალხმიანობა აღიარებულია იუნესკოს მიერ არამატერიალური კულტურული მემკვიდრეობის შედევრად.</p>"
+      },
+      "fr": {
+        "name": "Chants polyphoniques géorgiens",
+        "biography": "<p>La musique géorgienne est un phénomène musical, se distinguant de toute autre polyphonie par sa qualité et son essence. La polyphonie géorgienne est reconnue par l'UNESCO comme un chef-d'œuvre du patrimoine immatériel.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 18,
+    "slug": "korali",
+    "type": "group",
+    "default_name": "ქორალი",
+    "translations": {
+      "ru": {
+        "name": "Корали",
+        "biography": "<p>Корали - фольклорная грузинская группа, специализирующаяся на аутентичном исполнении народных песен регионов Грузии.</p>"
+      },
+      "en": {
+        "name": "Qorali",
+        "biography": "<p>Qorali is a Georgian folk group specializing in the authentic performance of folk songs from various regions of Georgia.</p>"
+      },
+      "ka": {
+        "name": "ქორალი",
+        "biography": "<p>ქორალი არის ქართული ფოლკლორული ჯგუფი, რომელიც სპეციალიზებულია საქართველოს სხვადასხვა კუთხის ხალხური სიმღერების ავთენტურ შესრულებაზე.</p>"
+      },
+      "fr": {
+        "name": "Qorali",
+        "biography": "<p>Qorali est un groupe folklorique géorgien spécialisé dans l'interprétation authentique des chants traditionnels des différentes régions de Géorgie.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 21,
+    "slug": "nino-katamadze",
+    "type": "person",
+    "default_name": "ნინო ქათამაძე",
+    "translations": {
+      "ru": {
+        "name": "Нино Катамадзе",
+        "biography": "<p>Нино Катамадзе – известная грузинская исполнительница, композитор и, как она сама себя называет, певица-хулиганка[cite: 1]. Нино полюбилась публике не только своим сильным голосом, но и интересным подходом к фольклору и джазу[cite: 1].</p>"
+      },
+      "en": {
+        "name": "Nino Katamadze",
+        "biography": "<p>Nino Katamadze is a famous Georgian singer and composer. She is loved for her powerful voice and unique approach to blending folklore with jazz and classical music[cite: 1, 2].</p>"
+      },
+      "ka": {
+        "name": "ნინო ქათამაძე",
+        "biography": "<p>ნინო ქათამაძე — ცნობილი ქართველი მომღერალი და კომპოზიტორი. იგი ცნობილია თავისი ძლიერი ხმით და ფოლკლორისა და ჯაზის ორიგინალური სინთეზით[cite: 1, 2].</p>"
+      },
+      "fr": {
+        "name": "Nino Katamadze",
+        "biography": "<p>Nino Katamadze est une célèbre chanteuse et compositrice géorgienne. Elle est appréciée pour sa voix puissante et son approche unique mêlant folklore et jazz[cite: 1, 2].</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 22,
+    "slug": "dato-kenchiashvili",
+    "type": "person",
+    "default_name": "დათო კენჩიაშვილი",
+    "translations": {
+      "ru": {
+        "name": "Дато Кенчиашвили",
+        "biography": "<p>Дато Кенчиашвили - известный грузинский композитор-фольклорист, один из самых перспективных исполнителей народной музыки в Грузии[cite: 1].</p>"
+      },
+      "en": {
+        "name": "Dato Kenchiashvili",
+        "biography": "<p>Dato Kenchiashvili is a well-known Georgian folk composer and one of the most promising performers of traditional music in Georgia[cite: 1].</p>"
+      },
+      "ka": {
+        "name": "დათო კენჩიაშვილი",
+        "biography": "<p>დათო კენჩიაშვილი — ცნობილი ქართველი კომპოზიტორი და ფოლკლორისტი, ტრადიციული მუსიკის ერთ-ერთი ყველაზე პერსპექტიული შემსრულებელი[cite: 1].</p>"
+      },
+      "fr": {
+        "name": "Dato Kenchiashvili",
+        "biography": "<p>Dato Kenchiashvili est un célèbre compositeur folkloriste géorgien, l'un des interprètes les plus prometteurs de la musique traditionnelle en Géorgie[cite: 1].</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 23,
+    "slug": "keti-merkviladze",
+    "type": "person",
+    "default_name": "ქეთი მერკვილაძე",
+    "translations": {
+      "ru": {
+        "name": "Кети Мерквиладзе",
+        "biography": "<p>Кети Мерквиладзе — талантливая грузинская певица, завоевавшая популярность благодаря своему лирическому голосу и исполнению современных эстрадных песен[cite: 1].</p>"
+      },
+      "en": {
+        "name": "Keti Merkviladze",
+        "biography": "<p>Keti Merkviladze is a talented Georgian singer who gained popularity through her lyrical voice and performances of modern pop songs[cite: 1].</p>"
+      },
+      "ka": {
+        "name": "ქეთი მერკვილაძე",
+        "biography": "<p>ქეთი მერკვილაძე — ნიჭიერი ქართველი მომღერალი, რომელმაც პოპულარობა მოიპოვა თავისი ლირიკული ხმითა და თანამედროვე ესტრადის შესრულებით[cite: 1].</p>"
+      },
+      "fr": {
+        "name": "Keti Merkviladze",
+        "biography": "<p>Keti Merkviladze est une talentueuse chanteuse géorgienne, devenue populaire grâce à sa voix lyrique et ses interprétations de chansons pop modernes[cite: 1].</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 24,
+    "slug": "oto-nemsadze",
+    "type": "person",
+    "default_name": "ოთო ნემსაძე",
+    "translations": {
+      "ru": {
+        "name": "Ото Немсадзе",
+        "biography": "<p>Ото Немсадзе - победитель конкурса «GeoStar-2010»[cite: 1]. Лидер джаз-бенда, регулярно выступает в Тбилиси и Батуми[cite: 1]. Представлял Грузию на Евровидении[cite: 1].</p>"
+      },
+      "en": {
+        "name": "Oto Nemsadze",
+        "biography": "<p>Oto Nemsadze is the winner of \"GeoStar-2010\"[cite: 1]. He leads his own jazz band and represented Georgia at the Eurovision Song Contest[cite: 1].</p>"
+      },
+      "ka": {
+        "name": "ოთო ნემსაძე",
+        "biography": "<p>ოთო ნემსაძე — „Geostar 2010“-ის გამარჯვებული[cite: 1]. იგი საკუთარი ჯაზ-ბენდის ლიდერია და წარადგენდა საქართველოს ევროვიზიაზე[cite: 1].</p>"
+      },
+      "fr": {
+        "name": "Oto Nemsadze",
+        "biography": "<p>Oto Nemsadze est le vainqueur de « GeoStar-2010 »[cite: 1]. Il dirige son propre groupe de jazz et a représenté la Géorgie à l'Eurovision[cite: 1].</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 25,
+    "slug": "lela-tsurtsumiya",
+    "type": "person",
+    "default_name": "ლელა წურწუმია",
+    "translations": {
+      "ru": {
+        "name": "Лэла Цурцумия",
+        "biography": "<p>Лэла Цурцумия - грузинская эстрадная певица[cite: 1]. Выступает с 1991 года, выпустила 12 альбомов[cite: 1]. Является одной из самых ярких звезд современной грузинской поп-сцены[cite: 1].</p>"
+      },
+      "en": {
+        "name": "Lela Tsurtsumia",
+        "biography": "<p>Lela Tsurtsumia is a prominent Georgian pop singer[cite: 1]. Performing since 1991, she has released 12 albums and remains a leading star on the Georgian music scene[cite: 1].</p>"
+      },
+      "ka": {
+        "name": "ლელა წურწუმია",
+        "biography": "<p>ლელა წურწუმია — ცნობილი ქართველი მომღერალი[cite: 1]. იგი სცენაზეა 1991 წლიდან, გამოშვებული აქვს 12 ალბომი და თანამედროვე ქართული პოპ-სცენის ერთ-ერთი ყველაზე კაშკაშა ვარსკვლავია[cite: 1].</p>"
+      },
+      "fr": {
+        "name": "Lela Tsurtsumia",
+        "biography": "<p>Lela Tsurtsumia est une chanteuse pop géorgienne renommée[cite: 1]. Sur scène depuis 1991, elle a sorti 12 albums et reste une figure majeure de la musique actuelle en Géorgie[cite: 1].</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 26,
+    "slug": "dato-khudzhadze",
+    "type": "person",
+    "default_name": "დათო ხუჯაძე",
+    "translations": {
+      "ru": {
+        "name": "Дато Худжадзе",
+        "biography": "<p>Дато - известный грузинский певец и мультиинструменталист[cite: 1]. Получил признание в Грузии, странах СНГ и Америке за свой уникальный стиль исполнения[cite: 1].</p>"
+      },
+      "en": {
+        "name": "Dato Khujadze",
+        "biography": "<p>Dato is a famous Georgian singer and multi-instrumentalist[cite: 1]. He gained wide recognition in Georgia, CIS countries, and the US for his unique style[cite: 1].</p>"
+      },
+      "ka": {
+        "name": "დათო ხუჯაძე",
+        "biography": "<p>დათო — ცნობილი ქართველი მომღერალი და მულტიინსტრუმენტალისტი[cite: 1]. მან აღიარება მოიპოვა საქართველოში, დსთ-ს ქვეყნებსა და ამერიკაში[cite: 1].</p>"
+      },
+      "fr": {
+        "name": "Dato Khujadze",
+        "biography": "<p>Dato est un célèbre chanteur et multi-instrumentiste géorgien[cite: 1]. Il a acquis une large reconnaissance en Géorgie, dans les pays de la CEI et aux États-Unis[cite: 1].</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 27,
+    "slug": "bani",
+    "type": "group",
+    "default_name": "ბანი",
+    "translations": {
+      "ru": {
+        "name": "Бани",
+        "biography": "<p>Группа создана в 2011 году. В составе 7 человек. В репертуаре коллектива более 30 хитов. Музыка «BANI» популярна во всем мире благодаря песням об истинных чувствах и любви к родине.</p>"
+      },
+      "en": {
+        "name": "Bani",
+        "biography": "<p>Formed in 2011, Bani is a 7-member group with over 30 hits. Their music is popular worldwide for its songs about true feelings, friendship, and love for the motherland.</p>"
+      },
+      "ka": {
+        "name": "ბანი",
+        "biography": "<p>ჯგუფი შეიქმნა 2011 წელს 7 წევრის შემადგენლობით. მათ რეპერტუარში 30-ზე მეტი ჰიტია. „BANI“-ს მუსიკა პოპულარულია მთელ მსოფლიოში გულწრფელი გრძნობებისა და სამშობლოს სიყვარულის გამო.</p>"
+      },
+      "fr": {
+        "name": "Bani",
+        "biography": "<p>Créé en 2011, le groupe Bani se compose de 7 membres. Avec plus de 30 succès à leur actif, leur musique est populaire mondialement pour ses thèmes sur l'amitié et l'amour de la patrie.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 28,
+    "slug": "zurgi",
+    "type": "group",
+    "default_name": "ზურგი",
+    "translations": {
+      "ru": {
+        "name": "Зурги",
+        "biography": "<p>Группа основана в 2010 году Георгием Марром и Зурой Джавахия. Особенность коллектива в том, что первые песни создавались дистанционно между Тбилиси и Гаагой с помощью интернета.</p>"
+      },
+      "en": {
+        "name": "Zurgi",
+        "biography": "<p>Founded in 2010 by Giorgi Marr and Zura Javakhia. The group is unique because their first songs were composed and recorded remotely between Tbilisi and The Hague via the internet.</p>"
+      },
+      "ka": {
+        "name": "ზურგი",
+        "biography": "<p>ჯგუფი დაარსდა 2010 წელს გიორგი მარისა და ზურა ჯავახიას მიერ. კოლექტივი უნიკალურია იმით, რომ პირველი სიმღერები დისტანციურად, თბილისსა და ჰააგას შორის ინტერნეტით შეიქმნა.</p>"
+      },
+      "fr": {
+        "name": "Zurgi",
+        "biography": "<p>Fondé en 2010 par Giorgi Marr et Zura Javakhia. Ce groupe est unique car leurs premières chansons ont été composées à distance entre Tbilissi et La Haye via Internet.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 34,
+    "slug": "nani-bregvadze",
+    "type": "person",
+    "default_name": "ნანი ბრეგვაძე",
+    "translations": {
+      "ru": {
+        "name": "Нани Брегвадзе",
+        "biography": "<p>Легендарная грузинская певица, народная артистка СССР. Была солисткой ансамблей «Рэра» и «Орэра». Прославилась возрождением традиций русского и цыганского романса на советской эстраде.</p>"
+      },
+      "en": {
+        "name": "Nani Bregvadze",
+        "biography": "<p>A legendary Georgian singer and People's Artist of the USSR. Formerly a soloist for \"Rera\" and \"Orera\", she is famous for reviving the traditions of Russian and Romani romances.</p>"
+      },
+      "ka": {
+        "name": "ნანი ბრეგვაძე",
+        "biography": "<p>ლეგენდარული ქართველი მომღერალი, სსრკ სახალხო არტისტი. იყო ანსამბლების „რერა“ და „ორერა“ სოლისტი. ცნობილია რუსული და ბოშური რომანსების ტრადიციების აღორძინებით.</p>"
+      },
+      "fr": {
+        "name": "Nani Bregvadze",
+        "biography": "<p>Chanteuse géorgienne légendaire et Artiste du Peuple de l'URSS. Ancienne soliste des ensembles « Rera » et « Orera », elle est célèbre pour avoir fait revivre la tradition des romances.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 37,
+    "slug": "33a",
+    "type": "group",
+    "default_name": "33ა",
+    "translations": {
+      "ru": {
+        "name": "33А",
+        "biography": "<p>Группа основана в 1996 году Ниазом Диасамидзе. Музыка представляет собой синтез фолка, регги и рока с глубокими грузинскими корнями. Названа в честь адреса, где живут участники.</p>"
+      },
+      "en": {
+        "name": "33a",
+        "biography": "<p>Founded in 1996 by Niaz Diasamidze. Their music is a unique synthesis of folk, reggae, and rock. The name \"33a\" refers to the house address where the band members live.</p>"
+      },
+      "ka": {
+        "name": "33ა",
+        "biography": "<p>ჯგუფი დაარსდა 1996 წელს ნიაზ დიასამიძის მიერ. მუსიკა წარმოადგენს ფოლკის, რეგის და როკის სინთეზს. სახელი „33ა“ იმ სახლის მისამართია, სადაც ჯგუფის წევრები ცხოვრობენ.</p>"
+      },
+      "fr": {
+        "name": "33a",
+        "biography": "<p>Fondé en 1996 par Niaz Diasamidze. Leur musique est une synthèse unique de folk, reggae et rock. Le nom « 33a » correspond à l'adresse où résident les membres du groupe.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 38,
+    "slug": "bendi-mutso",
+    "type": "group",
+    "default_name": "ბენდი მუცო",
+    "translations": {
+      "ru": {
+        "name": "Бэнд Муцо",
+        "biography": "<p>Тбилисский вокально-инструментальный ансамбль, исполняющий современные интерпретации традиционных грузинских песен и авторский материал.</p>"
+      },
+      "en": {
+        "name": "Band Mutso",
+        "biography": "<p>A Tbilisi-based vocal and instrumental band that performs modern interpretations of traditional Georgian songs along with original material.</p>"
+      },
+      "ka": {
+        "name": "ბენდი მუცო",
+        "biography": "<p>თბილისური ვოკალურ-ინსტრუმენტული ბენდი, რომელიც ასრულებს ტრადიციული ქართული სიმღერების თანამედროვე ინტერპრეტაციებს და საავტორო მასალას.</p>"
+      },
+      "fr": {
+        "name": "Band Mutso",
+        "biography": "<p>Un groupe vocal et instrumental basé à Tbilissi qui propose des interprétations modernes de chants traditionnels géorgiens ainsi que des compositions originales.</p>"
+      }
+    }
+  },
+  {
+    "legacy_category_id": 39,
+    "slug": "bend-chkerali",
+    "type": "group",
+    "default_name": "ჩქერალი",
+    "translations": {
+      "ru": { "name": "Бэнд Чкерали", "biography": "<p>Грузинская фолк-группа, известная своим энергичным исполнением народных песен и использованием традиционных инструментов.</p>" },
+      "en": { "name": "Chqerali", "biography": "<p>A Georgian folk group known for their energetic performances of traditional songs using authentic instruments.</p>" },
+      "ka": { "name": "ჩქერალი", "biography": "<p>ქართული ფოლკ-ჯგუფი, რომელიც ცნობილია ხალხური სიმღერების ენერგიული შესრულებით და ტრადიციული საკრავების გამოყენებით.</p>" },
+      "fr": { "name": "Chqerali", "biography": "<p>Un groupe de folk géorgien connu pour ses interprétations énergiques de chansons traditionnelles utilisant des instruments authentiques.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 44,
+    "slug": "trio-mandili",
+    "type": "group",
+    "default_name": "ტრიო მანდილი",
+    "translations": {
+      "ru": { "name": "Трио Мандили", "biography": "<p>Трио Мандили — грузинская женская группа, ставшая интернет-феноменом. Они исполняют традиционное многоголосие под аккомпанемент пандури, снимая свои прогулки на видео.</p>" },
+      "en": { "name": "Trio Mandili", "biography": "<p>Trio Mandili is a Georgian female group that became an internet phenomenon. They perform traditional polyphony accompanied by panduri while filming their walks.</p>" },
+      "ka": { "name": "ტრიო მანდილი", "biography": "<p>ტრიო მანდილი არის ქართული ქალთა ჯგუფი, რომელიც ინტერნეტ-ფენომენად იქცა. ისინი ასრულებენ ტრადიციულ მრავალხმიანობას ფანდურის თანხლებით.</p>" },
+      "fr": { "name": "Trio Mandili", "biography": "<p>Trio Mandili est un groupe féminin géorgien devenu un phénomène Internet. Elles interprètent des polyphonies traditionnelles accompagnées du panduri.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 45,
+    "slug": "mziuri",
+    "type": "group",
+    "default_name": "მზიური",
+    "translations": {
+      "ru": { "name": "Мзиури", "biography": "<p>«Мзиури» — легендарный детский ВИА, основанный в 1971 году. Из этого коллектива вышли такие звезды, как Тамара Гвердцители и Майя Джабуа.</p>" },
+      "en": { "name": "Mziuri", "biography": "<p>Mziuri is a legendary children's ensemble founded in 1971. It produced famous stars like Tamara Gverdtsiteli and Maia Jabua.</p>" },
+      "ka": { "name": "მზიური", "biography": "<p>მზიური — ლეგენდარული ბავშვთა ვოკალურ-ინსტრუმენტული ანსამბლი, დაარსებული 1971 წელს. აქედან გამოვიდნენ ისეთი ვარსკვლავები, როგორებიცაა თამარ გვერდწითელი და მაია ჯაბუა.</p>" },
+      "fr": { "name": "Mziuri", "biography": "<p>Mziuri est un ensemble vocal et instrumental légendaire pour enfants fondé en 1971. Il a formé des stars comme Tamara Gverdtsiteli.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 49,
+    "slug": "gruppa-mtieli",
+    "type": "group",
+    "default_name": "ჯგუფი მტიელი",
+    "translations": {
+      "ru": { "name": "Группа Мтиели", "biography": "<p>Грузинская фолк-группа, сохраняющая традиции горского песнопения и аутентичного звучания народных инструментов.</p>" },
+      "en": { "name": "Jgupi Mtieli", "biography": "<p>A Georgian folk group preserving the traditions of mountain chants and the authentic sound of national instruments.</p>" },
+      "ka": { "name": "ჯგუფი მტიელი", "biography": "<p>ქართული ფოლკ-ჯგუფი, რომელიც ინარჩუნებს მთის სიმღერების ტრადიციებს და ხალხური საკრავების ავთენტურ ჟღერადობას.</p>" },
+      "fr": { "name": "Jgupi Mtieli", "biography": "<p>Un groupe folk géorgien préservant les traditions des chants de montagne et le son authentique des instruments nationaux.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 50,
+    "slug": "soso-mikeladze",
+    "type": "person",
+    "default_name": "სოსო მიქელაძე",
+    "translations": {
+      "ru": { "name": "Сосо Микеладзе", "biography": "<p>Популярный грузинский исполнитель, известный своими лирическими песнями и душевным исполнением в стиле городской эстрады.</p>" },
+      "en": { "name": "Soso Miqeladze", "biography": "<p>A popular Georgian performer known for his lyrical songs and soulful performance in the style of urban pop music.</p>" },
+      "ka": { "name": "სოსო მიქელაძე", "biography": "<p>პოპულარული ქართველი შემსრულებელი, ცნობილი თავისი ლირიკული სიმღერებითა და ქალაქური ესტრადის სულიერი შესრულებით.</p>" },
+      "fr": { "name": "Soso Miqeladze", "biography": "<p>Un interprète géorgien populaire connu pour ses chansons lyriques et ses performances habitées dans le style de la variété urbaine.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 51,
+    "slug": "sofo-batilashvili",
+    "type": "person",
+    "default_name": "სოფო ბათილაშვილი",
+    "translations": {
+      "ru": { "name": "Софо Батилашвили", "biography": "<p>Современная грузинская певица, получившая широкую известность благодаря участию и победе в популярных вокальных телешоу.</p>" },
+      "en": { "name": "Sopo Batilashvili", "biography": "<p>A contemporary Georgian singer who gained widespread fame through her participation and victory in popular TV vocal competitions.</p>" },
+      "ka": { "name": "სოფო ბათილაშვილი", "biography": "<p>თანამედროვე ქართველი მომღერალი, რომელმაც ფართო აღიარება პოპულარულ მუსიკალურ მეგა-შოუებში გამარჯვებით მოიპოვა.</p>" },
+      "fr": { "name": "Sopo Batilashvili", "biography": "<p>Une chanteuse géorgienne contemporaine qui a acquis une grande notoriété grâce à sa participation et sa victoire dans des télé-crochets populaires.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 52,
+    "slug": "zviad-bolkvadze",
+    "type": "person",
+    "default_name": "ზვიად ბოლქვაძე",
+    "translations": {
+      "ru": { "name": "Звиад Болквадзе", "biography": "<p>Известный грузинский композитор, дирижер и исполнитель. Мастер многоголосия, сочетающий в своем творчестве академическую музыку и фольклор.</p>" },
+      "en": { "name": "Zviad Bolqvadze", "biography": "<p>A renowned Georgian composer, conductor, and performer. He is a master of polyphony, blending academic music with folklore in his work.</p>" },
+      "ka": { "name": "ზვიად ბოლქვაძე", "biography": "<p>ცნობილი ქართველი კომპოზიტორი, დირიჟორი და შემსრულებელი. მრავალხმიანობის ოსტატი, რომელიც თავის შემოქმედებაში აკადემიურ მუსიკასა და ფოლკლორს აერთიანებს.</p>" },
+      "fr": { "name": "Zviad Bolqvadze", "biography": "<p>Un célèbre compositeur, chef d'orchestre et interprète géorgien. Maître de la polyphonie, il mêle musique académique et folklore dans ses œuvres.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 56,
+    "slug": "basiani",
+    "type": "group",
+    "default_name": "ბასიანი",
+    "translations": {
+      "ru": { "name": "Басиани", "biography": "<p>Ансамбль «Басиани» был основан в 2000 году. Коллектив работает над возрождением и популяризацией древних образцов грузинского полифонического пения.</p>" },
+      "en": { "name": "Basiani", "biography": "<p>The Basiani ensemble was founded in 2000. The group focuses on reviving and popularizing ancient examples of Georgian polyphonic singing.</p>" },
+      "ka": { "name": "ბასიანი", "biography": "<p>ანსამბლი „ბასიანი“ დაარსდა 2000 წელს. კოლექტივი მუშაობს ქართული პოლიფონიური გალობისა და სიმღერის უძველესი ნიმუშების აღდგენასა და პოპულარიზაციაზე.</p>" },
+      "fr": { "name": "Basiani", "biography": "<p>L'ensemble Basiani a été fondé en 2000. Le groupe travaille à la renaissance et à la promotion d'exemples anciens du chant polyphonique géorgien.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 57,
+    "slug": "temuri-tsiklauri",
+    "type": "person",
+    "default_name": "თეიმურაზ წიკლაური",
+    "translations": {
+      "ru": { "name": "Тимур Циклаури", "biography": "<p>Легендарный грузинский певец, солист ансамбля «Иверия». Его мощный голос и артистизм стали символом целой эпохи грузинской эстрады.</p>" },
+      "en": { "name": "Teimuraz Tsiklauri", "biography": "<p>A legendary Georgian singer and soloist of the \"Iveria\" ensemble. His powerful voice and artistry became symbols of an entire era of Georgian pop music.</p>" },
+      "ka": { "name": "თეიმურაზ წიკლაური", "biography": "<p>ლეგენდარული ქართველი მომღერალი, ანსამბლ „ივერიის“ სოლისტი. მისი მძლავრი ხმა და არტისტულობა ქართული ესტრადის მთელი ეპოქის სიმბოლოდ იქცა.</p>" },
+      "fr": { "name": "Teimuraz Tsiklauri", "biography": "<p>Chanteur géorgien légendaire, soliste de l'ensemble « Iveria ». Sa voix puissante et son charisme sont devenus les symboles d'une époque entière de la variété géorgienne.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 59,
+    "slug": "nino-chkheidze",
+    "type": "person",
+    "default_name": "ნინო ჩხეიძე",
+    "translations": {
+      "ru": { "name": "Нино Чхеидзе", "biography": "<p>Популярная певица, прославившаяся исполнением современных интерпретаций грузинских городских песен и фольклора.</p>" },
+      "en": { "name": "Nino Chkheidze", "biography": "<p>A popular singer famous for her modern interpretations of traditional Georgian urban songs and folklore.</p>" },
+      "ka": { "name": "ნინო ჩხეიძე", "biography": "<p>პოპულარული მომღერალი, რომელმაც სახელი გაითქვა ქართული ქალაქური სიმღერებისა და ფოლკლორის თანამედროვე ინტერპრეტაციებით.</p>" },
+      "fr": { "name": "Nino Chkheidze", "biography": "<p>Une chanteuse populaire célèbre pour ses interprétations modernes des chansons urbaines traditionnelles et du folklore géorgien.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 65,
+    "slug": "kartuli-khmebi",
+    "type": "group",
+    "default_name": "ქართული ხმები",
+    "translations": {
+      "ru": { "name": "Картули хмеби", "biography": "<p>Знаменитый мужской вокальный ансамбль («Грузинские голоса»), визитная карточка грузинского многоголосия на мировой сцене.</p>" },
+      "en": { "name": "Qartuli Khmebi", "biography": "<p>A famous male vocal ensemble (\"Georgian Voices\"), a hallmark of Georgian polyphony on the global music stage.</p>" },
+      "ka": { "name": "ქართული ხმები", "biography": "<p>ცნობილი მამაკაცთა ვოკალური ანსამბლი, რომელიც ქართული მრავალხმიანობის სავიზიტო ბარათია მსოფლიო სცენაზე.</p>" },
+      "fr": { "name": "Qartuli Khmebi", "biography": "<p>Un célèbre ensemble vocal masculin (« Voix Géorgiennes »), véritable emblème de la polyphonie géorgienne sur la scène mondiale.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 67,
+    "slug": "qartvelo",
+    "type": "group",
+    "default_name": "ანსამბლი ქართველო",
+    "translations": {
+      "ru": { "name": "Ансамбль Картвело", "biography": "<p>Грузинский вокальный ансамбль, сохраняющий традиции народного пения и популяризирующий культурное наследие различных регионов страны.</p>" },
+      "en": { "name": "Ansambli Qartvelo", "biography": "<p>A Georgian vocal ensemble that preserves traditions of folk singing and promotes the cultural heritage of different regions of the country.</p>" },
+      "ka": { "name": "ანსამბლი ქართველო", "biography": "<p>ქართული ვოკალური ანსამბლი, რომელიც ინარჩუნებს ხალხური სიმღერის ტრადიციებს და ქვეყნის სხვადასხვა კუთხის კულტურული მემკვიდრეობის პოპულარიზაციას ეწევა.</p>" },
+      "fr": { "name": "Ansambli Qartvelo", "biography": "<p>Un ensemble vocal géorgien qui préserve les traditions du chant populaire et promeut l'héritage culturel des différentes régions du pays.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 70,
+    "slug": "shini",
+    "type": "group",
+    "default_name": "ჯგუფი შინი",
+    "translations": {
+      "ru": { "name": "Группа Шини", "biography": "<p>«The Shin» — грузинское джаз-фьюжн трио, базирующееся в Германии. Их музыка сочетает в себе грузинский фольклор, джаз и фламенко.</p>" },
+      "en": { "name": "Jgupi Shini", "biography": "<p>The Shin is a Georgian jazz-fusion trio based in Germany. Their music combines Georgian folklore, jazz, and flamenco influences.</p>" },
+      "ka": { "name": "ჯგუფი შინი", "biography": "<p>„The Shin“ — ქართული ჯაზ-ფიუჟენ ტრიო, რომელიც მოღვაწეობს გერმანიაში. მათი მუსიკა აერთიანებს ქართულ ფოლკლორს, ჯაზსა და ფლამენკოს.</p>" },
+      "fr": { "name": "Jgupi Shini", "biography": "<p>The Shin est un trio de jazz-fusion géorgien basé en Allemagne. Leur musique combine folklore géorgien, jazz et influences flamenco.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 75,
+    "slug": "erisioni",
+    "type": "group",
+    "default_name": "ერისიონი",
+    "translations": {
+      "ru": { "name": "Эрисиони", "biography": "<p>Академический ансамбль народной песни и танца Грузии, основанный в 1885 году. Один из старейших и крупнейших профессиональных коллективов мира.</p>" },
+      "en": { "name": "Erisioni", "biography": "<p>The Academic Ensemble of National Song and Dance of Georgia, founded in 1885. It is one of the oldest and largest professional ensembles in the world.</p>" },
+      "ka": { "name": "ერისიონი", "biography": "<p>საქართველოს ხალხური სიმღერისა და ცეკვის სახელმწიფო აკადემიური ანსამბლი, დაარსებული 1885 წელს. ერთ-ერთი უძველესი და უდიდესი პროფესიული კოლექტივი მსოფლიოში.</p>" },
+      "fr": { "name": "Erisioni", "biography": "<p>Ensemble académique de chant et de danse nationale de Géorgie, fondé en 1885. C'est l'un des plus anciens et des plus grands ensembles professionnels au monde.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 80,
+    "slug": "megi-gogitidze",
+    "type": "person",
+    "default_name": "მეგი გოგიტიძე",
+    "translations": {
+      "ru": { "name": "Меги Гогитидзе", "biography": "<p>Самобытная грузинская певица и автор песен. Ее стиль сочетает в себе элементы фолка, рока, джаза и даже хип-хопа с глубокими текстами на грузинском и русском языках.</p>" },
+      "en": { "name": "Megi Gogitidze", "biography": "<p>A unique Georgian singer and songwriter. Her style combines elements of folk, rock, jazz, and even hip-hop with profound lyrics in Georgian and Russian.</p>" },
+      "ka": { "name": "მეგი გოგიტიძე", "biography": "<p>თვითმყოფადი ქართველი მომღერალი და სიმღერების ავტორი. მისი სტილი აერთიანებს ფოლკის, როკის, ჯაზისა და ჰიპ-ჰოპის ელემენტებს ღრმა შინაარსის მქონე ტექსტებთან.</p>" },
+      "fr": { "name": "Megi Gogitidze", "biography": "<p>Une chanteuse et auteure-compositrice géorgienne singulière. Son style mêle folk, rock, jazz et hip-hop avec des textes profonds en géorgien et en russe.</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 82,
+    "slug": "gela-guralia",
+    "type": "person",
+    "default_name": "გელა გურალია",
+    "translations": {
+      "ru": { "name": "Гела Гуралиа", "biography": "<p>Грузинский и российский певец, обладатель редкого высокого мужского голоса (тенор-алтино). Стал широко известен после успешного участия в шоу «Голос».</p>" },
+      "en": { "name": "Gela Guralia", "biography": "<p>A Georgian and Russian singer with a rare high male voice (tenor altino). He became widely known after his successful appearance on \"The Voice\".</p>" },
+      "ka": { "name": "გელა გურალია", "biography": "<p>ქართველი და რუსი მომღერალი, იშვიათი მაღალი მამაკაცის ხმის (ტენორ-ალტინო) მფლობელი. ფართოდ ცნობილი გახდა პროექტ „ხმაში“ მონაწილეობის შემდეგ.</p>" },
+      "fr": { "name": "Gela Guralia", "biography": "<p>Un chanteur géorgien et russe doté d'une voix masculine rare (ténor altino). Il s'est fait connaître grâce à son succès dans l'émission « The Voice ».</p>" }
+    }
+  },
+  {
+    "legacy_category_id": 86,
+    "slug": "gio-khutsishvili",
+    "type": "person",
+    "default_name": "გიო ხუციშვილი",
+    "translations": {
+      "ru": { "name": "Георгий Хуцишвили", "biography": "<p>Известный грузинский певец и актер. Мастер городского романса и песен о Тбилиси, чье творчество наполнено особым колоритом и теплотой.</p>" },
+      "en": { "name": "Gio Khutsishvili", "biography": "<p>A famous Georgian singer and actor. A master of urban romance and songs about Tbilisi, whose work is filled with a special local flavor and warmth.</p>" },
+      "ka": { "name": "გიო ხუციშვილი", "biography": "<p>ცნობილი ქართველი მომღерალი და მსახიობი. ქალაქური რომანსისა და თბილისზე შექმნილი სიმღერების ოსტატი, რომლის შემოქმედებაც სავსეა განსაკუთრებული სითბოთი.</p>" },
+      "fr": { "name": "Gio Khutsishvili", "biography": "<p>Un célèbre chanteur et acteur géorgien. Maître de la romance urbaine et des chansons sur Tbilissi, dont l'œuvre est empreinte d'une chaleur et d'un charme particuliers.</p>" }
+    }
+  }
+]

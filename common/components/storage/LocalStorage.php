@@ -34,6 +34,11 @@ final class LocalStorage extends Component implements StorageInterface
         return $this->baseUrl;
     }
 
+    public function getStorageName(): string
+    {
+        return 'local';
+    }
+
     public function getPublicUrl(string $path): string
     {
         $segments = array_map(

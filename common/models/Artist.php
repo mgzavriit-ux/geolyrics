@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace common\models;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -88,6 +90,17 @@ final class Artist extends ActiveRecord
         ];
     }
 
+    public function getPublishedAtFormatted(): string
+    {
+        if ($this->published_at === null) {
+            return '';
+        }
+
+        return (new DateTimeImmutable('@' . (string) $this->published_at))
+            ->setTimezone(new DateTimeZone(date_default_timezone_get()))
+            ->format('d.m.Y H:i:s');
+    }
+
     public function getTypeList(): array
     {
         return [
@@ -110,5 +123,34 @@ final class Artist extends ActiveRecord
     public function getTranslations(): ActiveQuery
     {
         return $this->hasMany(ArtistTranslation::class, ['artist_id' => 'id']);
+    }
+
+    public function beforeSave($insert): bool
+    {
+        if (parent::beforeSave($insert) === false) {
+            return false;
+        }
+
+        $this->applyPublishedAtValue();
+
+        return true;
+    }
+
+    private function applyPublishedAtValue(): void
+    {
+        if ($this->publication_status !== self::PUBLICATION_STATUS_PUBLISHED) {
+            return;
+        }
+
+        if ($this->published_at !== null) {
+            return;
+        }
+
+        $this->published_at = $this->getCurrentTimestamp();
+    }
+
+    private function getCurrentTimestamp(): int
+    {
+        return time();
     }
 }
