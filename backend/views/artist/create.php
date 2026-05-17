@@ -6,6 +6,7 @@ declare(strict_types=1);
 /** @var common\models\Artist $model */
 /** @var array $publicationStatusItems */
 /** @var array $typeItems */
+/** @var backend\models\ArtistGalleryForm $galleryForm */
 /** @var common\models\ArtistTranslation[] $translationModels */
 /** @var array $languageLabels */
 
@@ -21,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'publicationStatusItems' => $publicationStatusItems,
         'typeItems' => $typeItems,
         'translationModels' => $translationModels,
+        'galleryForm' => $galleryForm,
         'languageLabels' => $languageLabels,
     ]) ?>
 </div>

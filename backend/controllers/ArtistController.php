@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace backend\controllers;
 
+use backend\models\ArtistGalleryForm;
 use backend\models\ArtistSearch;
+use common\app\WebApplication;
+use common\components\storage\StorageInterface;
 use common\models\Artist;
 use common\models\ArtistTranslation;
 use common\models\Language;
@@ -34,10 +37,11 @@ final class ArtistController extends AdminController
     {
         $model = new Artist();
         $languages = $this->findLanguages();
+        $galleryForm = $this->createGalleryForm($model);
         $translationModels = $this->findTranslationModels($model, $languages);
 
-        if ($this->loadArtistForm($model, $translationModels) && $this->validateArtistForm($model, $translationModels)) {
-            $this->saveArtistForm($model, $translationModels);
+        if ($this->loadArtistForm($model, $translationModels, $galleryForm) && $this->validateArtistForm($model, $translationModels, $galleryForm)) {
+            $this->saveArtistForm($model, $translationModels, $galleryForm);
 
             Yii::$app->session->setFlash('success', 'Исполнитель сохранен.');
             return $this->redirect(['index']);
@@ -48,6 +52,7 @@ final class ArtistController extends AdminController
             'publicationStatusItems' => $model->getPublicationStatusList(),
             'typeItems' => $model->getTypeList(),
             'translationModels' => $translationModels,
+            'galleryForm' => $galleryForm,
             'languageLabels' => $this->findLanguageLabels($languages),
         ]);
     }
@@ -85,10 +90,11 @@ final class ArtistController extends AdminController
     {
         $model = $this->findModel($id);
         $languages = $this->findLanguages();
+        $galleryForm = $this->createGalleryForm($model);
         $translationModels = $this->findTranslationModels($model, $languages);
 
-        if ($this->loadArtistForm($model, $translationModels) && $this->validateArtistForm($model, $translationModels)) {
-            $this->saveArtistForm($model, $translationModels);
+        if ($this->loadArtistForm($model, $translationModels, $galleryForm) && $this->validateArtistForm($model, $translationModels, $galleryForm)) {
+            $this->saveArtistForm($model, $translationModels, $galleryForm);
 
             Yii::$app->session->setFlash('success', 'Исполнитель обновлен.');
             return $this->redirect(['index']);
@@ -99,13 +105,17 @@ final class ArtistController extends AdminController
             'publicationStatusItems' => $model->getPublicationStatusList(),
             'typeItems' => $model->getTypeList(),
             'translationModels' => $translationModels,
+            'galleryForm' => $galleryForm,
             'languageLabels' => $this->findLanguageLabels($languages),
         ]);
     }
 
     private function findModel(int $id): Artist
     {
-        $model = Artist::find()->with(['translations'])->andWhere(['id' => $id])->one();
+        $model = Artist::find()
+            ->with(['translations', 'artistImages.mediaAsset'])
+            ->andWhere(['id' => $id])
+            ->one();
 
         if ($model instanceof Artist) {
             return $model;
@@ -174,13 +184,14 @@ final class ArtistController extends AdminController
     /**
      * @param ArtistTranslation[] $translationModels
      */
-    private function loadArtistForm(Artist $model, array $translationModels): bool
+    private function loadArtistForm(Artist $model, array $translationModels, ArtistGalleryForm $galleryForm): bool
     {
         if (Yii::$app->request->isPost === false) {
             return false;
         }
 
         $model->load(Yii::$app->request->post());
+        $galleryForm->load(Yii::$app->request->post());
         Model::loadMultiple($translationModels, Yii::$app->request->post());
 
         return true;
@@ -189,13 +200,14 @@ final class ArtistController extends AdminController
     /**
      * @param ArtistTranslation[] $translationModels
      */
-    private function saveArtistForm(Artist $model, array $translationModels): void
+    private function saveArtistForm(Artist $model, array $translationModels, ArtistGalleryForm $galleryForm): void
     {
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
             $model->save(false);
             $this->saveTranslationModels($model, $translationModels);
+            $galleryForm->save();
             $transaction->commit();
         } catch (\Throwable $exception) {
             $transaction->rollBack();
@@ -226,10 +238,24 @@ final class ArtistController extends AdminController
     /**
      * @param ArtistTranslation[] $translationModels
      */
-    private function validateArtistForm(Artist $model, array $translationModels): bool
+    private function validateArtistForm(Artist $model, array $translationModels, ArtistGalleryForm $galleryForm): bool
     {
         $isValid = $model->validate();
+        $isValid = $galleryForm->validate() && $isValid;
 
         return Model::validateMultiple($translationModels) && $isValid;
+    }
+
+    private function createGalleryForm(Artist $artist): ArtistGalleryForm
+    {
+        return new ArtistGalleryForm($artist, $this->getStorage());
+    }
+
+    private function getStorage(): StorageInterface
+    {
+        /** @var WebApplication $app */
+        $app = Yii::$app;
+
+        return $app->storage;
     }
 }

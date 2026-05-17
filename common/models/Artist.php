@@ -20,6 +20,7 @@ use yii\db\ActiveRecord;
  * @property int $created_at
  * @property int $updated_at
  *
+ * @property ArtistImage[] $artistImages
  * @property ArtistTranslation[] $translations
  */
 final class Artist extends ActiveRecord
@@ -132,6 +133,16 @@ final class Artist extends ActiveRecord
     {
         return $this->hasMany(Recording::class, ['id' => 'recording_id'])
             ->viaTable('{{%recording_artist}}', ['artist_id' => 'id']);
+    }
+
+    public function getArtistImages(): ActiveQuery
+    {
+        return $this->hasMany(ArtistImage::class, ['artist_id' => 'id'])
+            ->orderBy([
+                'is_primary' => SORT_DESC,
+                'sort_order' => SORT_ASC,
+                'media_asset_id' => SORT_ASC,
+            ]);
     }
 
     public function getSongs(): ActiveQuery

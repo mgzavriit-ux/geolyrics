@@ -4,18 +4,24 @@ declare(strict_types=1);
 
 /** @var yii\web\View $this */
 /** @var common\models\Artist $model */
+/** @var backend\models\ArtistGalleryForm $galleryForm */
 /** @var array $publicationStatusItems */
 /** @var array $typeItems */
 /** @var common\models\ArtistTranslation[] $translationModels */
 /** @var array $languageLabels */
 
+use backend\widgets\ArtistGalleryInputWidget;
 use common\models\ArtistTranslation;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 ?>
 <div class="artist-form">
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'enctype' => 'multipart/form-data',
+        ],
+    ]); ?>
 
     <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
 
@@ -34,6 +40,13 @@ use yii\bootstrap5\Html;
         ]) ?>
         <div class="form-text">Дата выставляется автоматически при первом сохранении со статусом «Опубликован».</div>
     </div>
+
+    <hr class="my-4">
+
+    <?= ArtistGalleryInputWidget::widget([
+        'form' => $form,
+        'galleryForm' => $galleryForm,
+    ]) ?>
 
     <hr class="my-4">
 
