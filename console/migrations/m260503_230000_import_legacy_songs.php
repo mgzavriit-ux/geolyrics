@@ -66,6 +66,7 @@ final class m260503_230000_import_legacy_songs extends Migration
     /**
      * @return array<int, array{
      *     slug:string,
+     *     created_at:int,
      *     publication_status:string,
      *     default_title:string,
      *     translations:array<string, array{title:string, history_html:string}>,
@@ -99,6 +100,7 @@ final class m260503_230000_import_legacy_songs extends Migration
 
         /** @var array<int, array{
          *     slug:string,
+         *     created_at:int,
          *     publication_status:string,
          *     default_title:string,
          *     translations:array<string, array{title:string, history_html:string}>,
@@ -129,6 +131,7 @@ final class m260503_230000_import_legacy_songs extends Migration
     /**
      * @param array<int, array{
      *     slug:string,
+     *     created_at:int,
      *     publication_status:string,
      *     default_title:string
      * }> $songs
@@ -142,6 +145,7 @@ final class m260503_230000_import_legacy_songs extends Migration
         foreach ($songs as $song) {
             $slug = $song['slug'];
             $existingSong = $existingSongsBySlug[$slug] ?? null;
+            $createdAt = $this->findSongCreatedAt($song, $timestamp);
             $publishedAt = $this->createPublishedAtValue(
                 $song['publication_status'],
                 $existingSong['published_at'] ?? null,
@@ -156,7 +160,7 @@ final class m260503_230000_import_legacy_songs extends Migration
                     'publication_status' => $song['publication_status'],
                     'cover_media_asset_id' => null,
                     'published_at' => $publishedAt,
-                    'created_at' => $timestamp,
+                    'created_at' => $createdAt,
                     'updated_at' => $timestamp,
                 ]);
 
@@ -171,6 +175,7 @@ final class m260503_230000_import_legacy_songs extends Migration
                     'default_title' => $song['default_title'],
                     'publication_status' => $song['publication_status'],
                     'published_at' => $publishedAt,
+                    'created_at' => $createdAt,
                     'updated_at' => $timestamp,
                 ],
                 ['id' => $existingSong['id']],
@@ -840,6 +845,20 @@ final class m260503_230000_import_legacy_songs extends Migration
         }
 
         return $timestamp;
+    }
+
+    /**
+     * @param array{created_at:int|string|null} $song
+     */
+    private function findSongCreatedAt(array $song, int $fallbackTimestamp): int
+    {
+        $createdAt = (int) ($song['created_at'] ?? 0);
+
+        if ($createdAt > 0) {
+            return $createdAt;
+        }
+
+        return $fallbackTimestamp;
     }
 
     private function createLegacyMediaDescription(string $recordingType, string $legacyPath): string

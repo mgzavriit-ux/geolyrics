@@ -1,6 +1,7 @@
 [
   {
     "legacy_lyrics_id": 1,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -68,6 +69,7 @@
   },
   {
     "legacy_lyrics_id": 2,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -133,6 +135,7 @@
   },
   {
     "legacy_lyrics_id": 3,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -190,6 +193,7 @@
   },
   {
     "legacy_lyrics_id": 4,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -255,6 +259,7 @@
   },
   {
     "legacy_lyrics_id": 5,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -312,6 +317,7 @@
   },
   {
     "legacy_lyrics_id": 6,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -387,6 +393,7 @@
   },
   {
     "legacy_lyrics_id": 7,
+    "created_at": 1499691500,
     "legacy_category_ids": [
       16
     ],
@@ -454,6 +461,7 @@
   },
   {
     "legacy_lyrics_id": 8,
+    "created_at": 1499692069,
     "legacy_category_ids": [
       17
     ],
@@ -529,6 +537,7 @@
   },
   {
     "legacy_lyrics_id": 9,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -586,6 +595,7 @@
   },
   {
     "legacy_lyrics_id": 10,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -643,6 +653,7 @@
   },
   {
     "legacy_lyrics_id": 11,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -718,6 +729,7 @@
   },
   {
     "legacy_lyrics_id": 12,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -783,6 +795,7 @@
   },
   {
     "legacy_lyrics_id": 13,
+    "created_at": 1501486718,
     "legacy_category_ids": [
       18
     ],
@@ -850,6 +863,7 @@
   },
   {
     "legacy_lyrics_id": 14,
+    "created_at": 1503561053,
     "legacy_category_ids": [
       24
     ],
@@ -907,6 +921,7 @@
   },
   {
     "legacy_lyrics_id": 15,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -972,6 +987,7 @@
   },
   {
     "legacy_lyrics_id": 16,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -1037,6 +1053,7 @@
   },
   {
     "legacy_lyrics_id": 17,
+    "created_at": 1504191589,
     "legacy_category_ids": [
       27
     ],
@@ -1094,6 +1111,7 @@
   },
   {
     "legacy_lyrics_id": 18,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -1161,6 +1179,7 @@
   },
   {
     "legacy_lyrics_id": 19,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -1228,6 +1247,7 @@
   },
   {
     "legacy_lyrics_id": 20,
+    "created_at": 1504783123,
     "legacy_category_ids": [
       28
     ],
@@ -1285,6 +1305,7 @@
   },
   {
     "legacy_lyrics_id": 21,
+    "created_at": 1503583668,
     "legacy_category_ids": [
       26
     ],
@@ -1352,6 +1373,7 @@
   },
   {
     "legacy_lyrics_id": 22,
+    "created_at": 1503567511,
     "legacy_category_ids": [
       25
     ],
@@ -1419,6 +1441,7 @@
   },
   {
     "legacy_lyrics_id": 23,
+    "created_at": 1503567511,
     "legacy_category_ids": [
       25
     ],
@@ -1476,6 +1499,7 @@
   },
   {
     "legacy_lyrics_id": 24,
+    "created_at": 1499692069,
     "legacy_category_ids": [
       17
     ],
@@ -1533,6 +1557,7 @@
   },
   {
     "legacy_lyrics_id": 25,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -1600,6 +1625,7 @@
   },
   {
     "legacy_lyrics_id": 26,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -1665,6 +1691,7 @@
   },
   {
     "legacy_lyrics_id": 27,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -1730,6 +1757,7 @@
   },
   {
     "legacy_lyrics_id": 28,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -1797,6 +1825,7 @@
   },
   {
     "legacy_lyrics_id": 29,
+    "created_at": 1510055442,
     "legacy_category_ids": [
       34
     ],
@@ -1854,6 +1883,7 @@
   },
   {
     "legacy_lyrics_id": 30,
+    "created_at": 1510606187,
     "legacy_category_ids": [
       35
     ],
@@ -1917,6 +1947,7 @@
   },
   {
     "legacy_lyrics_id": 31,
+    "created_at": 1510824076,
     "legacy_category_ids": [
       36
     ],
@@ -1988,6 +2019,7 @@
   },
   {
     "legacy_lyrics_id": 32,
+    "created_at": 1503557307,
     "legacy_category_ids": [
       23
     ],
@@ -2053,6 +2085,7 @@
   },
   {
     "legacy_lyrics_id": 33,
+    "created_at": 1503556044,
     "legacy_category_ids": [
       22
     ],
@@ -2128,6 +2161,7 @@
   },
   {
     "legacy_lyrics_id": 34,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -2203,6 +2237,7 @@
   },
   {
     "legacy_lyrics_id": 35,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2260,6 +2295,7 @@
   },
   {
     "legacy_lyrics_id": 36,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2325,6 +2361,7 @@
   },
   {
     "legacy_lyrics_id": 37,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2382,6 +2419,7 @@
   },
   {
     "legacy_lyrics_id": 38,
+    "created_at": 1499692069,
     "legacy_category_ids": [
       17
     ],
@@ -2449,6 +2487,7 @@
   },
   {
     "legacy_lyrics_id": 39,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -2524,6 +2563,7 @@
   },
   {
     "legacy_lyrics_id": 40,
+    "created_at": 1510055442,
     "legacy_category_ids": [
       34
     ],
@@ -2599,6 +2639,7 @@
   },
   {
     "legacy_lyrics_id": 41,
+    "created_at": 1503557307,
     "legacy_category_ids": [
       23
     ],
@@ -2674,6 +2715,7 @@
   },
   {
     "legacy_lyrics_id": 42,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2741,6 +2783,7 @@
   },
   {
     "legacy_lyrics_id": 43,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2806,6 +2849,7 @@
   },
   {
     "legacy_lyrics_id": 44,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2871,6 +2915,7 @@
   },
   {
     "legacy_lyrics_id": 45,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -2936,6 +2981,7 @@
   },
   {
     "legacy_lyrics_id": 46,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -3001,6 +3047,7 @@
   },
   {
     "legacy_lyrics_id": 47,
+    "created_at": 1499692069,
     "legacy_category_ids": [
       17
     ],
@@ -3068,6 +3115,7 @@
   },
   {
     "legacy_lyrics_id": 48,
+    "created_at": 1510606187,
     "legacy_category_ids": [
       35
     ],
@@ -3123,6 +3171,7 @@
   },
   {
     "legacy_lyrics_id": 49,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -3180,6 +3229,7 @@
   },
   {
     "legacy_lyrics_id": 50,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -3237,6 +3287,7 @@
   },
   {
     "legacy_lyrics_id": 51,
+    "created_at": 1499691500,
     "legacy_category_ids": [
       16
     ],
@@ -3294,6 +3345,7 @@
   },
   {
     "legacy_lyrics_id": 52,
+    "created_at": 1523526820,
     "legacy_category_ids": [
       37
     ],
@@ -3351,6 +3403,7 @@
   },
   {
     "legacy_lyrics_id": 53,
+    "created_at": 1523526820,
     "legacy_category_ids": [
       37
     ],
@@ -3408,6 +3461,7 @@
   },
   {
     "legacy_lyrics_id": 54,
+    "created_at": 1499692069,
     "legacy_category_ids": [
       17
     ],
@@ -3465,6 +3519,7 @@
   },
   {
     "legacy_lyrics_id": 55,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -3532,6 +3587,7 @@
   },
   {
     "legacy_lyrics_id": 56,
+    "created_at": 1499691500,
     "legacy_category_ids": [
       16
     ],
@@ -3599,6 +3655,7 @@
   },
   {
     "legacy_lyrics_id": 57,
+    "created_at": 1523526820,
     "legacy_category_ids": [
       37
     ],
@@ -3656,6 +3713,7 @@
   },
   {
     "legacy_lyrics_id": 58,
+    "created_at": 1499692069,
     "legacy_category_ids": [
       17
     ],
@@ -3713,6 +3771,7 @@
   },
   {
     "legacy_lyrics_id": 59,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -3778,6 +3837,7 @@
   },
   {
     "legacy_lyrics_id": 60,
+    "created_at": 1529325227,
     "legacy_category_ids": [
       38
     ],
@@ -3853,6 +3913,7 @@
   },
   {
     "legacy_lyrics_id": 61,
+    "created_at": 1529325227,
     "legacy_category_ids": [
       38
     ],
@@ -3920,6 +3981,7 @@
   },
   {
     "legacy_lyrics_id": 62,
+    "created_at": 1499691500,
     "legacy_category_ids": [
       16
     ],
@@ -3977,6 +4039,7 @@
   },
   {
     "legacy_lyrics_id": 63,
+    "created_at": 1529652271,
     "legacy_category_ids": [
       40
     ],
@@ -4032,6 +4095,7 @@
   },
   {
     "legacy_lyrics_id": 64,
+    "created_at": 1529748516,
     "legacy_category_ids": [
       41
     ],
@@ -4103,6 +4167,7 @@
   },
   {
     "legacy_lyrics_id": 65,
+    "created_at": 1529833280,
     "legacy_category_ids": [
       42
     ],
@@ -4166,6 +4231,7 @@
   },
   {
     "legacy_lyrics_id": 66,
+    "created_at": 1503567511,
     "legacy_category_ids": [
       25
     ],
@@ -4233,6 +4299,7 @@
   },
   {
     "legacy_lyrics_id": 67,
+    "created_at": 1529995620,
     "legacy_category_ids": [
       43
     ],
@@ -4296,6 +4363,7 @@
   },
   {
     "legacy_lyrics_id": 68,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -4353,6 +4421,7 @@
   },
   {
     "legacy_lyrics_id": 69,
+    "created_at": 1530195601,
     "legacy_category_ids": [
       44
     ],
@@ -4420,6 +4489,7 @@
   },
   {
     "legacy_lyrics_id": 70,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -4487,6 +4557,7 @@
   },
   {
     "legacy_lyrics_id": 71,
+    "created_at": 1530787531,
     "legacy_category_ids": [
       45
     ],
@@ -4554,6 +4625,7 @@
   },
   {
     "legacy_lyrics_id": 72,
+    "created_at": 1531119409,
     "legacy_category_ids": [
       46
     ],
@@ -4617,6 +4689,7 @@
   },
   {
     "legacy_lyrics_id": 73,
+    "created_at": 1531119409,
     "legacy_category_ids": [
       46
     ],
@@ -4672,6 +4745,7 @@
   },
   {
     "legacy_lyrics_id": 74,
+    "created_at": 1531225058,
     "legacy_category_ids": [
       47
     ],
@@ -4735,6 +4809,7 @@
   },
   {
     "legacy_lyrics_id": 75,
+    "created_at": 1531296268,
     "legacy_category_ids": [
       48
     ],
@@ -4790,6 +4865,7 @@
   },
   {
     "legacy_lyrics_id": 76,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -4847,6 +4923,7 @@
   },
   {
     "legacy_lyrics_id": 77,
+    "created_at": 1532009017,
     "legacy_category_ids": [
       49
     ],
@@ -4914,6 +4991,7 @@
   },
   {
     "legacy_lyrics_id": 78,
+    "created_at": 1503556044,
     "legacy_category_ids": [
       22
     ],
@@ -4971,6 +5049,7 @@
   },
   {
     "legacy_lyrics_id": 79,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -5028,6 +5107,7 @@
   },
   {
     "legacy_lyrics_id": 80,
+    "created_at": 1531119409,
     "legacy_category_ids": [
       46
     ],
@@ -5083,6 +5163,7 @@
   },
   {
     "legacy_lyrics_id": 81,
+    "created_at": 1534485201,
     "legacy_category_ids": [
       50
     ],
@@ -5140,6 +5221,7 @@
   },
   {
     "legacy_lyrics_id": 82,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -5197,6 +5279,7 @@
   },
   {
     "legacy_lyrics_id": 83,
+    "created_at": 1535524960,
     "legacy_category_ids": [
       51,
       1,
@@ -5271,6 +5354,7 @@
   },
   {
     "legacy_lyrics_id": 84,
+    "created_at": 1535523876,
     "legacy_category_ids": [
       51
     ],
@@ -5338,6 +5422,7 @@
   },
   {
     "legacy_lyrics_id": 85,
+    "created_at": 1535523876,
     "legacy_category_ids": [
       51
     ],
@@ -5405,6 +5490,7 @@
   },
   {
     "legacy_lyrics_id": 86,
+    "created_at": 1539163044,
     "legacy_category_ids": [
       53
     ],
@@ -5460,6 +5546,7 @@
   },
   {
     "legacy_lyrics_id": 87,
+    "created_at": 1539163044,
     "legacy_category_ids": [
       53
     ],
@@ -5523,6 +5610,7 @@
   },
   {
     "legacy_lyrics_id": 88,
+    "created_at": 1539163044,
     "legacy_category_ids": [
       53
     ],
@@ -5578,6 +5666,7 @@
   },
   {
     "legacy_lyrics_id": 89,
+    "created_at": 1539933550,
     "legacy_category_ids": [
       54
     ],
@@ -5641,6 +5730,7 @@
   },
   {
     "legacy_lyrics_id": 90,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -5698,6 +5788,7 @@
   },
   {
     "legacy_lyrics_id": 91,
+    "created_at": 1541500207,
     "legacy_category_ids": [
       55
     ],
@@ -5761,6 +5852,7 @@
   },
   {
     "legacy_lyrics_id": 92,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -5818,6 +5910,7 @@
   },
   {
     "legacy_lyrics_id": 93,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -5875,6 +5968,7 @@
   },
   {
     "legacy_lyrics_id": 94,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -5932,6 +6026,7 @@
   },
   {
     "legacy_lyrics_id": 95,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -5999,6 +6094,7 @@
   },
   {
     "legacy_lyrics_id": 96,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6056,6 +6152,7 @@
   },
   {
     "legacy_lyrics_id": 97,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6113,6 +6210,7 @@
   },
   {
     "legacy_lyrics_id": 98,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6170,6 +6268,7 @@
   },
   {
     "legacy_lyrics_id": 99,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6227,6 +6326,7 @@
   },
   {
     "legacy_lyrics_id": 100,
+    "created_at": 1544080173,
     "legacy_category_ids": [
       56
     ],
@@ -6284,6 +6384,7 @@
   },
   {
     "legacy_lyrics_id": 101,
+    "created_at": 1544080173,
     "legacy_category_ids": [
       56
     ],
@@ -6351,6 +6452,7 @@
   },
   {
     "legacy_lyrics_id": 102,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6408,6 +6510,7 @@
   },
   {
     "legacy_lyrics_id": 103,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -6465,6 +6568,7 @@
   },
   {
     "legacy_lyrics_id": 104,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6530,6 +6634,7 @@
   },
   {
     "legacy_lyrics_id": 105,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6587,6 +6692,7 @@
   },
   {
     "legacy_lyrics_id": 106,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -6654,6 +6760,7 @@
   },
   {
     "legacy_lyrics_id": 107,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -6711,6 +6818,7 @@
   },
   {
     "legacy_lyrics_id": 108,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -6778,6 +6886,7 @@
   },
   {
     "legacy_lyrics_id": 109,
+    "created_at": 1550047049,
     "legacy_category_ids": [
       57
     ],
@@ -6835,6 +6944,7 @@
   },
   {
     "legacy_lyrics_id": 110,
+    "created_at": 1503567511,
     "legacy_category_ids": [
       25
     ],
@@ -6892,6 +7002,7 @@
   },
   {
     "legacy_lyrics_id": 111,
+    "created_at": 1550579389,
     "legacy_category_ids": [
       58
     ],
@@ -6947,6 +7058,7 @@
   },
   {
     "legacy_lyrics_id": 112,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -7004,6 +7116,7 @@
   },
   {
     "legacy_lyrics_id": 113,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -7071,6 +7184,7 @@
   },
   {
     "legacy_lyrics_id": 114,
+    "created_at": 1523526820,
     "legacy_category_ids": [
       37
     ],
@@ -7128,6 +7242,7 @@
   },
   {
     "legacy_lyrics_id": 115,
+    "created_at": 1551362956,
     "legacy_category_ids": [
       59
     ],
@@ -7195,6 +7310,7 @@
   },
   {
     "legacy_lyrics_id": 116,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -7252,6 +7368,7 @@
   },
   {
     "legacy_lyrics_id": 117,
+    "created_at": 1503479584,
     "legacy_category_ids": [
       21
     ],
@@ -7309,6 +7426,7 @@
   },
   {
     "legacy_lyrics_id": 118,
+    "created_at": 1530195601,
     "legacy_category_ids": [
       44
     ],
@@ -7376,6 +7494,7 @@
   },
   {
     "legacy_lyrics_id": 119,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -7433,6 +7552,7 @@
   },
   {
     "legacy_lyrics_id": 120,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -7490,6 +7610,7 @@
   },
   {
     "legacy_lyrics_id": 121,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -7557,6 +7678,7 @@
   },
   {
     "legacy_lyrics_id": 122,
+    "created_at": 1559568039,
     "legacy_category_ids": [
       60
     ],
@@ -7612,6 +7734,7 @@
   },
   {
     "legacy_lyrics_id": 123,
+    "created_at": 1529995620,
     "legacy_category_ids": [
       43
     ],
@@ -7667,6 +7790,7 @@
   },
   {
     "legacy_lyrics_id": 124,
+    "created_at": 1562748293,
     "legacy_category_ids": [
       61
     ],
@@ -7722,6 +7846,7 @@
   },
   {
     "legacy_lyrics_id": 125,
+    "created_at": 1563199611,
     "legacy_category_ids": [
       62
     ],
@@ -7777,6 +7902,7 @@
   },
   {
     "legacy_lyrics_id": 128,
+    "created_at": 1563566993,
     "legacy_category_ids": [
       63,
       1,
@@ -7844,6 +7970,7 @@
   },
   {
     "legacy_lyrics_id": 129,
+    "created_at": 1563616086,
     "legacy_category_ids": [
       65
     ],
@@ -7901,6 +8028,7 @@
   },
   {
     "legacy_lyrics_id": 130,
+    "created_at": 1563616086,
     "legacy_category_ids": [
       65
     ],
@@ -7958,6 +8086,7 @@
   },
   {
     "legacy_lyrics_id": 131,
+    "created_at": 1563616086,
     "legacy_category_ids": [
       65
     ],
@@ -8033,6 +8162,7 @@
   },
   {
     "legacy_lyrics_id": 132,
+    "created_at": 1563644856,
     "legacy_category_ids": [
       66
     ],
@@ -8088,6 +8218,7 @@
   },
   {
     "legacy_lyrics_id": 133,
+    "created_at": 1563715727,
     "legacy_category_ids": [
       67
     ],
@@ -8145,6 +8276,7 @@
   },
   {
     "legacy_lyrics_id": 134,
+    "created_at": 1563725221,
     "legacy_category_ids": [
       22,
       1,
@@ -8207,6 +8339,7 @@
   },
   {
     "legacy_lyrics_id": 135,
+    "created_at": 1563787470,
     "legacy_category_ids": [
       69
     ],
@@ -8262,6 +8395,7 @@
   },
   {
     "legacy_lyrics_id": 136,
+    "created_at": 1563802700,
     "legacy_category_ids": [
       70
     ],
@@ -8319,6 +8453,7 @@
   },
   {
     "legacy_lyrics_id": 137,
+    "created_at": 1535523876,
     "legacy_category_ids": [
       51
     ],
@@ -8386,6 +8521,7 @@
   },
   {
     "legacy_lyrics_id": 138,
+    "created_at": 1535524960,
     "legacy_category_ids": [
       52
     ],
@@ -8443,6 +8579,7 @@
   },
   {
     "legacy_lyrics_id": 139,
+    "created_at": 1501486718,
     "legacy_category_ids": [
       18
     ],
@@ -8500,6 +8637,7 @@
   },
   {
     "legacy_lyrics_id": 140,
+    "created_at": 1564132035,
     "legacy_category_ids": [
       71
     ],
@@ -8563,6 +8701,7 @@
   },
   {
     "legacy_lyrics_id": 141,
+    "created_at": 1564388174,
     "legacy_category_ids": [
       72
     ],
@@ -8618,6 +8757,7 @@
   },
   {
     "legacy_lyrics_id": 142,
+    "created_at": 1539163044,
     "legacy_category_ids": [
       53
     ],
@@ -8681,6 +8821,7 @@
   },
   {
     "legacy_lyrics_id": 143,
+    "created_at": 1531119409,
     "legacy_category_ids": [
       46
     ],
@@ -8736,6 +8877,7 @@
   },
   {
     "legacy_lyrics_id": 144,
+    "created_at": 1564748938,
     "legacy_category_ids": [
       73
     ],
@@ -8791,6 +8933,7 @@
   },
   {
     "legacy_lyrics_id": 145,
+    "created_at": 1566378617,
     "legacy_category_ids": [
       75
     ],
@@ -8858,6 +9001,7 @@
   },
   {
     "legacy_lyrics_id": 146,
+    "created_at": 1566803320,
     "legacy_category_ids": [
       76
     ],
@@ -8913,6 +9057,7 @@
   },
   {
     "legacy_lyrics_id": 147,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -8980,6 +9125,7 @@
   },
   {
     "legacy_lyrics_id": 148,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -9047,6 +9193,7 @@
   },
   {
     "legacy_lyrics_id": 149,
+    "created_at": 1530195601,
     "legacy_category_ids": [
       44
     ],
@@ -9114,6 +9261,7 @@
   },
   {
     "legacy_lyrics_id": 150,
+    "created_at": 1567492786,
     "legacy_category_ids": [
       77,
       1,
@@ -9181,6 +9329,7 @@
   },
   {
     "legacy_lyrics_id": 151,
+    "created_at": 1567491745,
     "legacy_category_ids": [
       77
     ],
@@ -9236,6 +9385,7 @@
   },
   {
     "legacy_lyrics_id": 152,
+    "created_at": 1568118680,
     "legacy_category_ids": [
       79
     ],
@@ -9291,6 +9441,7 @@
   },
   {
     "legacy_lyrics_id": 153,
+    "created_at": 1503583668,
     "legacy_category_ids": [
       26
     ],
@@ -9358,6 +9509,7 @@
   },
   {
     "legacy_lyrics_id": 154,
+    "created_at": 1568200132,
     "legacy_category_ids": [
       80,
       1,
@@ -9428,6 +9580,7 @@
   },
   {
     "legacy_lyrics_id": 155,
+    "created_at": 1568200132,
     "legacy_category_ids": [
       80
     ],
@@ -9495,6 +9648,7 @@
   },
   {
     "legacy_lyrics_id": 156,
+    "created_at": 1568200132,
     "legacy_category_ids": [
       80
     ],
@@ -9562,6 +9716,7 @@
   },
   {
     "legacy_lyrics_id": 157,
+    "created_at": 1568200386,
     "legacy_category_ids": [
       82
     ],
@@ -9619,6 +9774,7 @@
   },
   {
     "legacy_lyrics_id": 158,
+    "created_at": 1567492786,
     "legacy_category_ids": [
       78
     ],
@@ -9674,6 +9830,7 @@
   },
   {
     "legacy_lyrics_id": 159,
+    "created_at": 1567492786,
     "legacy_category_ids": [
       78
     ],
@@ -9737,6 +9894,7 @@
   },
   {
     "legacy_lyrics_id": 160,
+    "created_at": 1562748293,
     "legacy_category_ids": [
       61
     ],
@@ -9800,6 +9958,7 @@
   },
   {
     "legacy_lyrics_id": 161,
+    "created_at": 1568189794,
     "legacy_category_ids": [
       81
     ],
@@ -9863,6 +10022,7 @@
   },
   {
     "legacy_lyrics_id": 162,
+    "created_at": 1572952855,
     "legacy_category_ids": [
       83
     ],
@@ -9926,6 +10086,7 @@
   },
   {
     "legacy_lyrics_id": 163,
+    "created_at": 1503556044,
     "legacy_category_ids": [
       22
     ],
@@ -9983,6 +10144,7 @@
   },
   {
     "legacy_lyrics_id": 164,
+    "created_at": 1576498678,
     "legacy_category_ids": [
       84
     ],
@@ -10038,6 +10200,7 @@
   },
   {
     "legacy_lyrics_id": 165,
+    "created_at": 1572952855,
     "legacy_category_ids": [
       83
     ],
@@ -10101,6 +10264,7 @@
   },
   {
     "legacy_lyrics_id": 166,
+    "created_at": 1568200132,
     "legacy_category_ids": [
       80
     ],
@@ -10158,6 +10322,7 @@
   },
   {
     "legacy_lyrics_id": 167,
+    "created_at": 1568200132,
     "legacy_category_ids": [
       80
     ],
@@ -10215,6 +10380,7 @@
   },
   {
     "legacy_lyrics_id": 168,
+    "created_at": 1584627489,
     "legacy_category_ids": [
       53,
       1,
@@ -10282,6 +10448,7 @@
   },
   {
     "legacy_lyrics_id": 169,
+    "created_at": 1621161228,
     "legacy_category_ids": [
       86
     ],
@@ -10357,6 +10524,7 @@
   },
   {
     "legacy_lyrics_id": 170,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],
@@ -10414,6 +10582,7 @@
   },
   {
     "legacy_lyrics_id": 171,
+    "created_at": 1721068607,
     "legacy_category_ids": [
       87
     ],
@@ -10477,6 +10646,7 @@
   },
   {
     "legacy_lyrics_id": 172,
+    "created_at": 1721140514,
     "legacy_category_ids": [
       88
     ],
@@ -10540,6 +10710,7 @@
   },
   {
     "legacy_lyrics_id": 173,
+    "created_at": 1497800559,
     "legacy_category_ids": [
       15
     ],

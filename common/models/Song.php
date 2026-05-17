@@ -26,11 +26,12 @@ use yii\db\ActiveRecord;
  * @property SongArrangement[] $songArrangements
  * @property SongLine[] $songLines
  * @property SongTranslation[] $translations
+ * @property Recording[] $recordings
  */
 final class Song extends ActiveRecord
 {
-    public const PUBLICATION_STATUS_DRAFT = 'draft';
-    public const PUBLICATION_STATUS_PUBLISHED = 'published';
+    public const string PUBLICATION_STATUS_DRAFT = 'draft';
+    public const string PUBLICATION_STATUS_PUBLISHED = 'published';
 
     public static function tableName(): string
     {
@@ -123,6 +124,57 @@ final class Song extends ActiveRecord
     public function getRecordings(): ActiveQuery
     {
         return $this->hasMany(Recording::class, ['song_id' => 'id']);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getRecordingPerformerNames(): array
+    {
+        $performers = [];
+
+        foreach ($this->recordings as $recording) {
+            foreach ($recording->recordingArtists as $recordingArtist) {
+                $artist = $recordingArtist->artist;
+
+                if ($artist === null) {
+                    continue;
+                }
+
+                $artistId = (int) $artist->id;
+
+                if (isset($performers[$artistId])) {
+                    continue;
+                }
+
+                $performers[$artistId] = [
+                    'recording_id' => (int) $recording->id,
+                    'sort_order' => $recordingArtist->sort_order ?? PHP_INT_MAX,
+                    'name' => $artist->default_name,
+                ];
+            }
+        }
+
+        uasort($performers, static function (array $leftPerformer, array $rightPerformer): int {
+            $recordingComparison = $leftPerformer['recording_id'] <=> $rightPerformer['recording_id'];
+
+            if ($recordingComparison !== 0) {
+                return $recordingComparison;
+            }
+
+            $sortOrderComparison = $leftPerformer['sort_order'] <=> $rightPerformer['sort_order'];
+
+            if ($sortOrderComparison !== 0) {
+                return $sortOrderComparison;
+            }
+
+            return strcmp($leftPerformer['name'], $rightPerformer['name']);
+        });
+
+        return array_values(array_map(
+            static fn (array $performer): string => $performer['name'],
+            $performers,
+        ));
     }
 
     public function getSongLines(): ActiveQuery

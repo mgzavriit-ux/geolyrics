@@ -9,9 +9,8 @@ use common\models\Artist;
 use yii\db\ActiveQuery;
 use yii\web\NotFoundHttpException;
 use yii\web\Request;
-use yii\rest\Controller;
 
-final class ArtistController extends Controller
+final class ArtistController extends JsonRestController
 {
     public function actionIndex(): array
     {
@@ -41,6 +40,9 @@ final class ArtistController extends Controller
         ];
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function actionView(string $slug): array
     {
         $artist = $this->findPublishedArtistBySlug($slug);

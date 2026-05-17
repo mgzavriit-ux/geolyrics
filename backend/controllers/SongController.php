@@ -53,6 +53,7 @@ final class SongController extends AdminController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'artistItems' => $this->findArtistItems(),
             'languageItems' => $this->findLanguageItems(),
             'publicationStatusItems' => $song->getPublicationStatusList(),
         ]);
@@ -111,14 +112,45 @@ final class SongController extends AdminController
             ->column();
     }
 
+    private function findArtistItems(): array
+    {
+        $items = [];
+        $russianLanguageId = $this->findLanguageIdByCode('ru');
+
+        foreach ($this->findArtists() as $artist) {
+            $items[$artist->id] = $russianLanguageId === null
+                ? $artist->default_name
+                : $artist->getNameByLanguageId($russianLanguageId);
+        }
+
+        asort($items, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return $items;
+    }
+
     /**
      * @return Artist[]
      */
     private function findArtists(): array
     {
         return Artist::find()
+            ->with(['translations'])
             ->orderBy(['default_name' => SORT_ASC, 'id' => SORT_ASC])
             ->all();
+    }
+
+    private function findLanguageIdByCode(string $code): int | null
+    {
+        $languageId = Language::find()
+            ->select(['id'])
+            ->andWhere(['code' => $code])
+            ->scalar();
+
+        if ($languageId === false || $languageId === null) {
+            return null;
+        }
+
+        return (int) $languageId;
     }
 
     /**

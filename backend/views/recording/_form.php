@@ -18,6 +18,9 @@ RecordingMediaAsset::register($this);
 $audioMediaAsset = $model->getAudioMediaAsset();
 $videoMediaAsset = $model->getVideoMediaAsset();
 $coverMediaAsset = $model->coverMediaAsset;
+$audioMediaUrl = $audioMediaAsset === null ? null : \Yii::$app->storage->getPublicUrl($audioMediaAsset->path);
+$videoMediaUrl = $videoMediaAsset === null ? null : \Yii::$app->storage->getPublicUrl($videoMediaAsset->path);
+$coverMediaUrl = $coverMediaAsset === null ? null : \Yii::$app->storage->getPublicUrl($coverMediaAsset->path);
 $formatter = \Yii::$app->formatter;
 
 ?>
@@ -79,6 +82,14 @@ $formatter = \Yii::$app->formatter;
 
             <?php if ($audioMediaAsset !== null): ?>
                 <div class="bg-light border rounded p-3">
+                    <div class="mb-3">
+                        <audio controls preload="metadata" class="w-100">
+                            <source
+                                src="<?= Html::encode((string) $audioMediaUrl) ?>"
+                                <?= $audioMediaAsset->mime_type === null ? '' : 'type="' . Html::encode($audioMediaAsset->mime_type) . '"' ?>
+                            >
+                        </audio>
+                    </div>
                     <div class="fw-semibold mb-1"><?= Html::encode($audioMediaAsset->original_name) ?></div>
                     <div class="small text-muted mb-2">
                         <?= Html::encode($audioMediaAsset->mime_type ?? 'mime неизвестен') ?>
@@ -88,7 +99,7 @@ $formatter = \Yii::$app->formatter;
                     </div>
                     <?= Html::a(
                         'Открыть файл',
-                        \Yii::$app->storage->getPublicUrl($audioMediaAsset->path),
+                        $audioMediaUrl,
                         ['class' => 'btn btn-sm btn-outline-secondary', 'target' => '_blank', 'rel' => 'noopener noreferrer'],
                     ) ?>
                 </div>
@@ -103,6 +114,20 @@ $formatter = \Yii::$app->formatter;
 
             <?php if ($videoMediaAsset !== null): ?>
                 <div class="bg-light border rounded p-3">
+                    <div class="mb-3">
+                        <video
+                            controls
+                            preload="metadata"
+                            playsinline
+                            class="w-100 rounded border bg-black"
+                            style="max-height: 320px;"
+                        >
+                            <source
+                                src="<?= Html::encode((string) $videoMediaUrl) ?>"
+                                <?= $videoMediaAsset->mime_type === null ? '' : 'type="' . Html::encode($videoMediaAsset->mime_type) . '"' ?>
+                            >
+                        </video>
+                    </div>
                     <div class="fw-semibold mb-1"><?= Html::encode($videoMediaAsset->original_name) ?></div>
                     <div class="small text-muted mb-2">
                         <?= Html::encode($videoMediaAsset->mime_type ?? 'mime неизвестен') ?>
@@ -112,7 +137,7 @@ $formatter = \Yii::$app->formatter;
                     </div>
                     <?= Html::a(
                         'Открыть файл',
-                        \Yii::$app->storage->getPublicUrl($videoMediaAsset->path),
+                        $videoMediaUrl,
                         ['class' => 'btn btn-sm btn-outline-secondary', 'target' => '_blank', 'rel' => 'noopener noreferrer'],
                     ) ?>
                 </div>
@@ -132,14 +157,14 @@ $formatter = \Yii::$app->formatter;
                         <div class="bg-light border rounded p-3">
                             <div class="mb-2">
                                 <?= Html::img(
-                                    \Yii::$app->storage->getPublicUrl($coverMediaAsset->path),
+                                    $coverMediaUrl,
                                     ['class' => 'img-fluid rounded border', 'style' => 'max-height: 180px;']
                                 ) ?>
                             </div>
                             <div class="fw-semibold small mb-1"><?= Html::encode($coverMediaAsset->original_name) ?></div>
                             <?= Html::a(
                                 'Открыть изображение',
-                                \Yii::$app->storage->getPublicUrl($coverMediaAsset->path),
+                                $coverMediaUrl,
                                 ['class' => 'btn btn-sm btn-outline-secondary', 'target' => '_blank', 'rel' => 'noopener noreferrer'],
                             ) ?>
                         </div>

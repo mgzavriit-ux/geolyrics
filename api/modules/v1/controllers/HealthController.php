@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace api\modules\v1\controllers;
 
-use yii\rest\Controller;
-
-final class HealthController extends Controller
+final class HealthController extends JsonRestController
 {
     public function actionIndex(): array
     {

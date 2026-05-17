@@ -5,10 +5,13 @@ declare(strict_types=1);
 /** @var yii\web\View $this */
 /** @var backend\models\SongSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var array $artistItems */
 /** @var array $languageItems */
+
 /** @var array $publicationStatusItems */
 
 use common\models\Song;
+use yii\bootstrap5\LinkPager;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -23,43 +26,56 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            'id',
-            'default_title',
-            'slug',
-            [
-                'attribute' => 'original_language_id',
-                'filter' => $languageItems,
-                'value' => static function (Song $model): string {
-                    if ($model->originalLanguage === null) {
-                        return '';
-                    }
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'pager' => [
+                    'class' => LinkPager::class,
+                    'options' => [
+                            'class' => 'pagination justify-content-center align-items-center backend-pager mt-4 mb-0',
+                    ],
+                    'maxButtonCount' => 7,
+                    'firstPageLabel' => '«',
+                    'lastPageLabel' => '»',
+                    'prevPageLabel' => '‹',
+                    'nextPageLabel' => '›',
+            ],
+            'columns' => [
+                    'id',
+                    'default_title',
+                    [
+                            'attribute' => 'artist_id',
+                            'label' => 'Исполнители',
+                            'filter' => $artistItems,
+                            'value' => static function (Song $model): string {
+                                return implode(', ', $model->getRecordingPerformerNames());
+                            },
+                    ],
+                    'slug',
+                    [
+                            'attribute' => 'publication_status',
+                            'filter' => $publicationStatusItems,
+                            'value' => static function (Song $model): string {
+                                $items = $model->getPublicationStatusList();
 
-                    return $model->originalLanguage->name;
-                },
+                                return $items[$model->publication_status] ?? $model->publication_status;
+                            },
+                    ],
+                    [
+                            'attribute' => 'updated_at',
+                            'format' => 'datetime',
+                            'filter' => false,
+                    ],
+                    [
+                            'attribute' => 'created_at',
+                            'format' => 'datetime',
+                            'filter' => false,
+                    ],
+                    [
+                            'class' => ActionColumn::class,
+                            'urlCreator' => static function (string $action, Song $model): array {
+                                return [$action, 'id' => $model->id];
+                            },
+                    ],
             ],
-            [
-                'attribute' => 'publication_status',
-                'filter' => $publicationStatusItems,
-                'value' => static function (Song $model): string {
-                    $items = $model->getPublicationStatusList();
-
-                    return $items[$model->publication_status] ?? $model->publication_status;
-                },
-            ],
-            [
-                'attribute' => 'updated_at',
-                'format' => 'datetime',
-                'filter' => false,
-            ],
-            [
-                'class' => ActionColumn::class,
-                'urlCreator' => static function (string $action, Song $model): array {
-                    return [$action, 'id' => $model->id];
-                },
-            ],
-        ],
     ]) ?>
 </div>

@@ -109,6 +109,25 @@ final class Artist extends ActiveRecord
         ];
     }
 
+    public function getNameByLanguageId(int $languageId): string
+    {
+        foreach ($this->translations as $translation) {
+            if ((int) $translation->language_id !== $languageId) {
+                continue;
+            }
+
+            $name = trim((string) $translation->name);
+
+            if ($name === '') {
+                break;
+            }
+
+            return $name;
+        }
+
+        return $this->default_name;
+    }
+
     public function getRecordings(): ActiveQuery
     {
         return $this->hasMany(Recording::class, ['id' => 'recording_id'])

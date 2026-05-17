@@ -7,6 +7,7 @@ declare(strict_types=1);
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 use common\models\Language;
+use yii\bootstrap5\LinkPager;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -27,6 +28,17 @@ $booleanItems = [
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pager' => [
+            'class' => LinkPager::class,
+            'options' => [
+                'class' => 'pagination justify-content-center align-items-center backend-pager mt-4 mb-0',
+            ],
+            'maxButtonCount' => 7,
+            'firstPageLabel' => '«',
+            'lastPageLabel' => '»',
+            'prevPageLabel' => '‹',
+            'nextPageLabel' => '›',
+        ],
         'columns' => [
             'id',
             'code',

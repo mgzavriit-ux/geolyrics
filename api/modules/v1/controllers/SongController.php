@@ -11,9 +11,8 @@ use common\models\Song;
 use yii\db\ActiveQuery;
 use yii\web\NotFoundHttpException;
 use yii\web\Request;
-use yii\rest\Controller;
 
-final class SongController extends Controller
+final class SongController extends JsonRestController
 {
     public function actionIndex(): array
     {
