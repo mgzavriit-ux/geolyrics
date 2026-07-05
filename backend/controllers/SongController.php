@@ -98,6 +98,9 @@ final class SongController extends AdminController
         ]);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     public function actionUpdate(int $id): string|Response
     {
         return $this->handleForm($this->findModel($id), 'update', 'Песня обновлена.');
@@ -175,6 +178,9 @@ final class SongController extends AdminController
         throw new NotFoundHttpException('Песня не найдена.');
     }
 
+    /**
+     * @throws \Throwable
+     */
     private function handleForm(Song $song, string $view, string $successMessage): string|Response
     {
         $formModel = $this->createFormModel($song);

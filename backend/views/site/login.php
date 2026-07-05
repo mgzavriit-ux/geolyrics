@@ -7,26 +7,41 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Login';
+$this->title = 'Вход';
 ?>
-<div class="site-login">
-    <div class="mt-5 offset-lg-3 col-lg-6">
-        <h1><?= Html::encode($this->title) ?></h1>
+<div class="login-box">
+    <div class="login-logo">
+        <?= Html::a('<b>GeoLyrics</b> Admin', ['/site/index']) ?>
+    </div>
 
-        <p>Please fill out the following fields to login:</p>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Войдите в админку каталога</p>
 
-        <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($model, 'username', [
+                    'template' => '<div class="input-group mb-3">{input}<div class="input-group-text"><span class="bi bi-person" aria-hidden="true"></span></div>{error}</div>',
+                ])->textInput([
+                    'autofocus' => true,
+                    'class' => 'form-control',
+                    'placeholder' => 'Логин',
+                ])->label(false) ?>
 
-            <?= $form->field($model, 'password')->passwordInput() ?>
+                <?= $form->field($model, 'password', [
+                    'template' => '<div class="input-group mb-3">{input}<div class="input-group-text"><span class="bi bi-lock-fill" aria-hidden="true"></span></div>{error}</div>',
+                ])->passwordInput([
+                    'class' => 'form-control',
+                    'placeholder' => 'Пароль',
+                ])->label(false) ?>
 
-            <?= $form->field($model, 'rememberMe')->checkbox() ?>
+                <?= $form->field($model, 'rememberMe')->checkbox([], false)->label('Запомнить меня') ?>
 
-            <div class="form-group">
-                <?= Html::submitButton('Login', ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
-            </div>
+                <div class="d-grid">
+                    <?= Html::submitButton('Войти', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                </div>
 
-        <?php ActiveForm::end(); ?>
+            <?php ActiveForm::end(); ?>
+        </div>
     </div>
 </div>

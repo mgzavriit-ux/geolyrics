@@ -18,8 +18,10 @@ use common\services\ChordSheetParser;
 use common\services\RecordingRemover;
 use common\services\RecordingMediaUploader;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
@@ -170,6 +172,10 @@ final class SongEditorForm extends Model
         return $isLoaded;
     }
 
+    /**
+     * @throws \Throwable
+     * @throws Exception
+     */
     public function save(): void
     {
         $this->prepareAutoSlugs();
@@ -459,8 +465,10 @@ final class SongEditorForm extends Model
             return $originalLanguageId;
         }
 
-        foreach ($this->languages as $language) {
-            return $language->id;
+        $firstLanguageKey = array_key_first($this->languages);
+
+        if ($firstLanguageKey !== null) {
+            return (int) $this->languages[$firstLanguageKey]->id;
         }
 
         return null;
@@ -1248,6 +1256,9 @@ final class SongEditorForm extends Model
         }
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     private function synchronizeRecordingArtistModelsWithData(array $data): void
     {
         $formName = (new RecordingArtist())->formName();

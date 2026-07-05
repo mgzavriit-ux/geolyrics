@@ -86,6 +86,10 @@ final class ArtistController extends AdminController
         ]);
     }
 
+    /**
+     * @throws \Throwable
+     * @throws NotFoundHttpException
+     */
     public function actionUpdate(int $id): string|Response
     {
         $model = $this->findModel($id);
@@ -110,6 +114,9 @@ final class ArtistController extends AdminController
         ]);
     }
 
+    /**
+     * @throws NotFoundHttpException
+     */
     private function findModel(int $id): Artist
     {
         $model = Artist::find()

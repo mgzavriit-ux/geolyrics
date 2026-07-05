@@ -96,13 +96,16 @@ final class SongArrangement extends ActiveRecord
         return $this->capo !== null;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function getParsedPayload(): array
     {
         if (trim((string) $this->parsed_payload) === '') {
             return [];
         }
 
-        $payload = json_decode((string) $this->parsed_payload, true);
+        $payload = json_decode((string)$this->parsed_payload, true, 512, JSON_THROW_ON_ERROR);
 
         if (is_array($payload) === false) {
             return [];
