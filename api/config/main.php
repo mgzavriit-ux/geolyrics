@@ -47,6 +47,7 @@ return [
                 'GET' => 'site/index',
                 'GET health' => 'site/health',
                 'GET v1/health' => 'v1/health/index',
+                'GET v1/home/hero-images' => 'v1/home/hero-images',
                 'GET v1/songs' => 'v1/song/index',
                 'GET v1/songs/<slug:[a-z0-9\\-]+>' => 'v1/song/view',
                 'GET v1/artists' => 'v1/artist/index',

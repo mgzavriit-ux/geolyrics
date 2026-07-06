@@ -20,6 +20,12 @@ $menuItems = [
         'active' => $controllerId === 'site',
     ],
     [
+        'label' => 'Hero главной',
+        'url' => ['/home-hero-image/index'],
+        'icon' => 'bi-images',
+        'active' => $controllerId === 'home-hero-image',
+    ],
+    [
         'header' => 'Каталог',
     ],
     [

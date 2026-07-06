@@ -42,6 +42,13 @@ $items = [
         'icon' => 'bi-disc',
         'theme' => 'text-bg-danger',
     ],
+    [
+        'label' => 'Hero главной',
+        'description' => 'Ротация артистов на главной странице.',
+        'url' => ['/home-hero-image/index'],
+        'icon' => 'bi-images',
+        'theme' => 'text-bg-secondary',
+    ],
 ];
 ?>
 <div class="site-index">
