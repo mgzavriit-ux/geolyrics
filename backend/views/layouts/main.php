@@ -26,6 +26,15 @@ $menuItems = [
         'active' => $controllerId === 'home-hero-image',
     ],
     [
+        'header' => 'API',
+    ],
+    [
+        'label' => 'Эндпоинты',
+        'url' => ['/api-endpoint/index'],
+        'icon' => 'bi-hdd-network',
+        'active' => $controllerId === 'api-endpoint',
+    ],
+    [
         'header' => 'Каталог',
     ],
     [
