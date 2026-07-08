@@ -17,6 +17,10 @@ RecordingMediaAsset::register($this);
 
 $songId = $formModel->getSong()->id;
 $song = $formModel->getSong();
+$songCoverUploadForm = $formModel->getSongCoverUploadForm();
+$songCoverMediaAsset = $song->coverMediaAsset;
+$songCoverMediaUrl = $songCoverMediaAsset === null ? null : \Yii::$app->storage->getPublicUrl($songCoverMediaAsset->path);
+$formatter = \Yii::$app->formatter;
 $languageLabels = $formModel->getLanguageLabels();
 $languageItems = $formModel->getLanguageItems();
 $songTranslationLanguageItems = $formModel->getSongTranslationLanguageItems();
@@ -95,17 +99,45 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
 
                 <?= $form->field($song, 'publication_status')->dropDownList($formModel->getPublicationStatusItems()) ?>
 
-                <?= $form->field($song, 'cover_media_asset_id')->input('number') ?>
-
-                <div class="mb-3">
-                    <?= Html::activeLabel($song, 'published_at', ['class' => 'form-label']) ?>
-                    <?= Html::textInput('songPublishedAtDisplay', $song->getPublishedAtFormatted(), [
-                        'class' => 'form-control',
-                        'readonly' => true,
-                        'disabled' => true,
-                    ]) ?>
-                    <div class="form-text">Дата выставляется автоматически при первом сохранении со статусом «Опубликована».</div>
+                <div class="border rounded p-3 mb-3">
+                    <h3 class="h6 mb-3">Обложка песни</h3>
+                    <div class="row g-3 align-items-start">
+                        <div class="col-lg-7">
+                            <?= $form->field($songCoverUploadForm, 'coverFile')->fileInput(['accept' => 'image/*']) ?>
+                            <div class="form-text">Новая картинка заменит текущую обложку песни.</div>
+                        </div>
+                        <div class="col-lg-5">
+                            <?php if ($songCoverMediaAsset !== null): ?>
+                                <div class="bg-light border rounded p-3">
+                                    <div class="mb-2">
+                                        <?= Html::img(
+                                            $songCoverMediaUrl,
+                                            ['class' => 'img-fluid rounded border', 'style' => 'max-height: 180px;']
+                                        ) ?>
+                                    </div>
+                                    <div class="fw-semibold small mb-1"><?= Html::encode($songCoverMediaAsset->original_name) ?></div>
+                                    <div class="small text-muted mb-2">
+                                        <?= Html::encode($songCoverMediaAsset->mime_type ?? 'mime неизвестен') ?>
+                                        <?php if ($songCoverMediaAsset->size_bytes !== null): ?>
+                                            · <?= Html::encode($formatter->asShortSize((int) $songCoverMediaAsset->size_bytes, 1)) ?>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?= Html::a(
+                                        'Открыть изображение',
+                                        $songCoverMediaUrl,
+                                        ['class' => 'btn btn-sm btn-outline-secondary', 'target' => '_blank', 'rel' => 'noopener noreferrer'],
+                                    ) ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-muted small">Обложка песни пока не загружена.</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
+
+                <?= $form->field($formModel, 'publishedAtInputValue')
+                    ->input('datetime-local', ['step' => 1])
+                    ->hint('Можно скорректировать вручную. Если оставить пустым у опубликованной песни, дата выставится автоматически при сохранении.') ?>
             </div>
         </div>
 

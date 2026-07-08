@@ -61,12 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                     ],
                     [
-                            'attribute' => 'updated_at',
-                            'format' => 'datetime',
-                            'filter' => false,
-                    ],
-                    [
-                            'attribute' => 'created_at',
+                            'attribute' => 'published_at',
+                            'label' => 'Опубликована',
                             'format' => 'datetime',
                             'filter' => false,
                     ],

@@ -25,6 +25,7 @@ use yii\db\ActiveRecord;
  * @property MediaAsset|null $coverMediaAsset
  * @property SongArrangement[] $songArrangements
  * @property SongLine[] $songLines
+ * @property SongTitleTransliteration[] $titleTransliterations
  * @property SongTranslation[] $translations
  * @property Recording[] $recordings
  */
@@ -78,7 +79,7 @@ final class Song extends ActiveRecord
             'id' => 'ID',
             'original_language_id' => 'Оригинальный язык',
             'slug' => 'Slug',
-            'default_title' => 'Основное название',
+            'default_title' => 'Оригинальное название',
             'publication_status' => 'Статус',
             'cover_media_asset_id' => 'Обложка',
             'published_at' => 'Дата публикации',
@@ -191,6 +192,11 @@ final class Song extends ActiveRecord
     public function getTags(): ActiveQuery
     {
         return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable('{{%song_tag}}', ['song_id' => 'id']);
+    }
+
+    public function getTitleTransliterations(): ActiveQuery
+    {
+        return $this->hasMany(SongTitleTransliteration::class, ['song_id' => 'id']);
     }
 
     public function getTranslations(): ActiveQuery

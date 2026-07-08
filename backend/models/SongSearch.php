@@ -18,11 +18,12 @@ final class SongSearch extends Model
     public $slug;
     public $default_title;
     public $publication_status;
+    public $published_at;
 
     public function rules(): array
     {
         return [
-            [['id', 'artist_id', 'original_language_id'], 'integer'],
+            [['id', 'artist_id', 'original_language_id', 'published_at'], 'integer'],
             [['slug', 'default_title', 'publication_status'], 'safe'],
         ];
     }
@@ -36,6 +37,7 @@ final class SongSearch extends Model
     {
         return [
             'artist_id' => 'Исполнители',
+            'published_at' => 'Опубликована',
         ];
     }
 
@@ -49,6 +51,7 @@ final class SongSearch extends Model
             ])
             ->addSelect([
                 'song.*',
+                'published_at_is_empty' => new Expression('song.published_at IS NULL'),
                 'recording_artist_names_sort' => $this->createRecordingArtistNamesSortExpression(),
             ]);
 
@@ -59,8 +62,7 @@ final class SongSearch extends Model
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'updated_at' => SORT_DESC,
-                    'id' => SORT_DESC,
+                    'published_at' => SORT_DESC,
                 ],
                 'attributes' => [
                     'id',
@@ -68,7 +70,19 @@ final class SongSearch extends Model
                     'slug',
                     'original_language_id',
                     'publication_status',
-                    'updated_at',
+                    'published_at' => [
+                        'asc' => [
+                            'published_at_is_empty' => SORT_ASC,
+                            'song.published_at' => SORT_ASC,
+                            'id' => SORT_ASC,
+                        ],
+                        'desc' => [
+                            'published_at_is_empty' => SORT_ASC,
+                            'song.published_at' => SORT_DESC,
+                            'id' => SORT_DESC,
+                        ],
+                        'label' => 'Опубликована',
+                    ],
                     'artist_id' => [
                         'asc' => [
                             'recording_artist_names_sort' => SORT_ASC,

@@ -30,7 +30,9 @@ final class RecordingArtist extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['recording_id', 'artist_id', 'sort_order'], 'integer'],
+            [['recording_id', 'artist_id'], 'integer'],
+            [['sort_order'], 'default', 'value' => 0],
+            [['sort_order'], 'integer'],
             [['role'], 'string', 'max' => 32],
             [['artist_id', 'role'], 'validateRequiredFields'],
             [

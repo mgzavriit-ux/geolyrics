@@ -5,21 +5,26 @@ declare(strict_types=1);
 namespace api\modules\v1\presenters;
 
 use common\components\storage\StorageInterface;
+use common\models\Artist;
 use common\models\ArtistTranslation;
 use common\models\Language;
 use common\models\MediaAsset;
 use common\models\Recording;
 use common\models\RecordingArtist;
+use common\models\RecordingMedia;
 use common\models\Song;
 use common\models\SongArrangement;
 use common\models\SongLine;
 use common\models\SongLineTranslation;
 use common\models\SongTranslation;
+use common\models\Tag;
 
 final class SongPresenter
 {
-    public function __construct(private readonly StorageInterface $storage)
-    {
+    public function __construct(
+        private readonly StorageInterface $storage,
+        private readonly bool $hasTitleTransliterations = true,
+    ) {
     }
 
     public function presentListItem(Song $song): array
@@ -33,6 +38,9 @@ final class SongPresenter
             'originalLanguage' => $this->presentLanguage($song->originalLanguage),
             'translations' => $this->presentSongTranslations($song),
             'cover' => $this->presentMediaAsset($song->coverMediaAsset),
+            'artists' => $this->presentArtists($song),
+            'tags' => $this->presentTags($song),
+            'catalog' => $this->presentCatalogMeta($song),
         ];
     }
 
@@ -47,6 +55,7 @@ final class SongPresenter
             'originalLanguage' => $this->presentLanguage($song->originalLanguage),
             'translations' => $this->presentSongTranslations($song),
             'cover' => $this->presentMediaAsset($song->coverMediaAsset),
+            'artists' => $this->presentArtists($song),
             'lyrics' => $this->presentLyrics($song),
             'arrangements' => $this->presentSongArrangements($song),
             'recordings' => $this->presentRecordings($song),
@@ -123,6 +132,186 @@ final class SongPresenter
         ];
     }
 
+    private function presentArtistItem(Artist $artist): array
+    {
+        return [
+            'id' => $artist->id,
+            'slug' => $artist->slug,
+            'name' => $this->presentArtistName($artist),
+            'imageUrl' => $this->findArtistImageUrl($artist),
+        ];
+    }
+
+    private function presentArtists(Song $song): array
+    {
+        $artists = [];
+        $artistIds = [];
+
+        foreach ($this->findPublishedRecordings($song) as $recording) {
+            foreach ($this->findRecordingArtists($recording->recordingArtists) as $artist) {
+                $artistId = (int) $artist->id;
+
+                if (isset($artistIds[$artistId])) {
+                    continue;
+                }
+
+                $artistIds[$artistId] = true;
+                $artists[] = $this->presentArtistItem($artist);
+            }
+        }
+
+        return $artists;
+    }
+
+    private function presentTagItem(Tag $tag): array
+    {
+        return [
+            'id' => $tag->id,
+            'slug' => $tag->slug,
+            'name' => [
+                'default' => $tag->default_name,
+            ],
+        ];
+    }
+
+    private function presentTags(Song $song): array
+    {
+        $tags = [];
+
+        foreach ($song->tags as $tag) {
+            if ($tag->publication_status !== Tag::PUBLICATION_STATUS_PUBLISHED) {
+                continue;
+            }
+
+            $tags[] = $this->presentTagItem($tag);
+        }
+
+        return $tags;
+    }
+
+    private function presentCatalogMeta(Song $song): array
+    {
+        $recordings = $this->findPublishedRecordings($song);
+        $mainRecording = $recordings[0] ?? null;
+
+        return [
+            'durationMs' => $mainRecording?->duration_ms,
+            'hasAudio' => $this->hasRecordingMedia($recordings, RecordingMedia::ROLE_AUDIO),
+            'hasVideo' => $this->hasRecordingMedia($recordings, RecordingMedia::ROLE_VIDEO),
+            'hasChords' => count($song->songArrangements) > 0,
+            'hasTranslation' => $this->hasTranslation($song),
+            'hasTranscription' => $this->hasTranscription($song),
+        ];
+    }
+
+    /**
+     * @param RecordingArtist[] $recordingArtists
+     * @return Artist[]
+     */
+    private function findRecordingArtists(array $recordingArtists): array
+    {
+        $artists = [];
+
+        foreach ($this->sortRecordingArtistModels($recordingArtists) as $recordingArtist) {
+            if ($recordingArtist->artist !== null) {
+                $artists[] = $recordingArtist->artist;
+            }
+        }
+
+        return $artists;
+    }
+
+    /**
+     * @param RecordingArtist[] $recordingArtists
+     * @return RecordingArtist[]
+     */
+    private function sortRecordingArtistModels(array $recordingArtists): array
+    {
+        usort($recordingArtists, static function (
+            RecordingArtist $leftRecordingArtist,
+            RecordingArtist $rightRecordingArtist,
+        ): int {
+            return ((int) $leftRecordingArtist->sort_order <=> (int) $rightRecordingArtist->sort_order)
+                ?: ((int) $leftRecordingArtist->artist_id <=> (int) $rightRecordingArtist->artist_id);
+        });
+
+        return $recordingArtists;
+    }
+
+    private function findArtistImageUrl(Artist $artist): string | null
+    {
+        foreach ($artist->artistImages as $artistImage) {
+            if ($artistImage->mediaAsset !== null) {
+                return $this->storage->getPublicUrl($artistImage->mediaAsset->path);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Recording[] $recordings
+     */
+    private function hasRecordingMedia(array $recordings, string $role): bool
+    {
+        foreach ($recordings as $recording) {
+            foreach ($recording->recordingMediaEntries as $recordingMedia) {
+                if ($recordingMedia->role === $role) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasTranslation(Song $song): bool
+    {
+        foreach ($song->translations as $songTranslation) {
+            if ($songTranslation->hasContent()) {
+                return true;
+            }
+        }
+
+        foreach ($song->songLines as $songLine) {
+            foreach ($songLine->translations as $songLineTranslation) {
+                if ($songLineTranslation->hasContent()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasTranscription(Song $song): bool
+    {
+        if ($this->hasTitleTransliterations === false) {
+            return false;
+        }
+
+        foreach ($song->titleTransliterations as $titleTransliteration) {
+            if ($titleTransliteration->hasContent()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function presentArtistName(Artist $artist): array
+    {
+        $translations = $this->presentArtistNameTranslations($artist->translations);
+
+        return array_merge(
+            ['default' => $artist->default_name],
+            $translations,
+        );
+    }
+
     private function presentRecording(Recording $recording): array
     {
         return [
@@ -156,19 +345,9 @@ final class SongPresenter
      */
     private function presentRecordingArtists(Recording $recording): array
     {
-        $recordingArtists = $recording->recordingArtists;
-
-        usort($recordingArtists, static function (
-            RecordingArtist $leftRecordingArtist,
-            RecordingArtist $rightRecordingArtist,
-        ): int {
-            return ((int) $leftRecordingArtist->sort_order <=> (int) $rightRecordingArtist->sort_order)
-                ?: ((int) $leftRecordingArtist->artist_id <=> (int) $rightRecordingArtist->artist_id);
-        });
-
         $artists = [];
 
-        foreach ($recordingArtists as $recordingArtist) {
+        foreach ($this->sortRecordingArtistModels($recording->recordingArtists) as $recordingArtist) {
             $artist = $recordingArtist->artist;
 
             if ($artist === null) {
@@ -239,19 +418,27 @@ final class SongPresenter
      */
     private function presentRecordings(Song $song): array
     {
+        return array_map(
+            fn (Recording $recording): array => $this->presentRecording($recording),
+            $this->findPublishedRecordings($song),
+        );
+    }
+
+    /**
+     * @return Recording[]
+     */
+    private function findPublishedRecordings(Song $song): array
+    {
         $recordings = array_values(array_filter(
             $song->recordings,
             static fn (Recording $recording): bool => $recording->publication_status === Recording::PUBLICATION_STATUS_PUBLISHED,
         ));
 
         usort($recordings, static function (Recording $leftRecording, Recording $rightRecording): int {
-            return ($leftRecording->id <=> $rightRecording->id);
+            return $leftRecording->id <=> $rightRecording->id;
         });
 
-        return array_map(
-            fn (Recording $recording): array => $this->presentRecording($recording),
-            $recordings,
-        );
+        return $recordings;
     }
 
     /**

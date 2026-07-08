@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace backend\models;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use common\models\Artist;
 use common\models\Language;
 use common\models\Recording;
@@ -17,6 +19,7 @@ use common\services\CatalogSlugGenerator;
 use common\services\ChordSheetParser;
 use common\services\RecordingRemover;
 use common\services\RecordingMediaUploader;
+use common\services\SongCoverUploader;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
@@ -29,6 +32,8 @@ final class SongEditorForm extends Model
 {
     private const ORIGINAL_LANGUAGE_CODE = 'ka';
     private const SONG_TEXT_FORM_NAME = 'songFullText';
+
+    public string $publishedAtInputValue = '';
 
     /**
      * @var Artist[]
@@ -79,6 +84,8 @@ final class SongEditorForm extends Model
     private ChordSheetParser $chordSheetParser;
     private CatalogSlugGenerator $slugGenerator;
     private RecordingMediaUploader $recordingMediaUploader;
+    private SongCoverUploadForm $songCoverUploadForm;
+    private SongCoverUploader $songCoverUploader;
 
     /**
      * @var array<int, bool>
@@ -134,16 +141,22 @@ final class SongEditorForm extends Model
         $this->recordingRemover = new RecordingRemover($this->getStorage());
         $this->recordingMediaUploader = new RecordingMediaUploader($this->getStorage());
         $this->song = $song;
+        $this->songCoverUploadForm = new SongCoverUploadForm();
+        $this->songCoverUploader = new SongCoverUploader($this->getStorage());
         $this->slugGenerator = new CatalogSlugGenerator();
 
         parent::__construct($config);
 
+        $this->publishedAtInputValue = $this->createPublishedAtInputValue();
         $this->applyDefaultOriginalLanguage();
         $this->initializeModels();
         $this->prepareDefaults();
         $this->rebuildSongTextValues();
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function load($data, $formName = null): bool
     {
         $this->synchronizeSongArrangementModelsWithData($data);
@@ -153,6 +166,7 @@ final class SongEditorForm extends Model
         $this->synchronizeRecordingArtistModelsWithData($data);
 
         $isLoaded = $this->song->load($data);
+        $isLoaded = parent::load($data, $formName) || $isLoaded;
         $isLoaded = Model::loadMultiple($this->songArrangementModels, $data) || $isLoaded;
         $isLoaded = Model::loadMultiple($this->songTranslationModels, $data) || $isLoaded;
         $isLoaded = Model::loadMultiple($this->songLineModels, $data) || $isLoaded;
@@ -164,6 +178,7 @@ final class SongEditorForm extends Model
             $this->rebuildSongTextValues();
             $this->loadSongTextData($data);
             $this->applySongTextValuesToLineModels();
+            $this->loadSongCoverUploadFile();
             $this->loadRecordingMediaUploadFiles();
             $this->prepareDefaults();
             $this->rebuildSongTextValues();
@@ -184,6 +199,7 @@ final class SongEditorForm extends Model
 
         try {
             $this->song->save(false);
+            $this->saveSongCover();
             $this->saveSongArrangements();
             $this->saveSongTranslations();
             $this->saveSongLines();
@@ -199,14 +215,18 @@ final class SongEditorForm extends Model
 
     public function validate($attributeNames = null, $clearErrors = true): bool
     {
+        $isValid = parent::validate($attributeNames, $clearErrors);
+
         $this->prepareDefaults();
         $this->prepareAutoSlugs();
 
-        $isValid = $this->song->validate();
+        $isValid = $this->applyPublishedAtInputValue() && $isValid;
+        $isValid = $this->song->validate() && $isValid;
         $isValid = $this->validateSongArrangementModels() && $isValid;
         $isValid = Model::validateMultiple($this->songTranslationModels) && $isValid;
         $isValid = Model::validateMultiple($this->songLineModels) && $isValid;
         $isValid = Model::validateMultiple($this->songLineTranslationFlatModels) && $isValid;
+        $isValid = $this->songCoverUploadForm->validate() && $isValid;
         $isValid = Model::validateMultiple($this->recordingMediaUploadForms) && $isValid;
         $isValid = Model::validateMultiple($this->recordingArtistFlatModels) && $isValid;
         $isValid = $this->validateRecordingModels() && $isValid;
@@ -214,6 +234,20 @@ final class SongEditorForm extends Model
         $isValid = $this->validateRecordingArtistDuplicates() && $isValid;
 
         return $isValid;
+    }
+
+    public function rules(): array
+    {
+        return [
+            [['publishedAtInputValue'], 'safe'],
+        ];
+    }
+
+    public function attributeLabels(): array
+    {
+        return [
+            'publishedAtInputValue' => 'Дата публикации',
+        ];
     }
 
     public function getArtistItems(): array
@@ -323,6 +357,11 @@ final class SongEditorForm extends Model
     public function getSong(): Song
     {
         return $this->song;
+    }
+
+    public function getSongCoverUploadForm(): SongCoverUploadForm
+    {
+        return $this->songCoverUploadForm;
     }
 
     public function getSongArrangementFormatItems(): array
@@ -549,6 +588,59 @@ final class SongEditorForm extends Model
                 return;
             }
         }
+    }
+
+    private function createPublishedAtInputValue(): string
+    {
+        if ($this->song->published_at === null) {
+            return '';
+        }
+
+        return (new DateTimeImmutable('@' . (string) $this->song->published_at))
+            ->setTimezone(new DateTimeZone(date_default_timezone_get()))
+            ->format('Y-m-d\TH:i:s');
+    }
+
+    private function applyPublishedAtInputValue(): bool
+    {
+        $value = trim($this->publishedAtInputValue);
+
+        if ($value === '') {
+            $this->song->published_at = null;
+
+            return true;
+        }
+
+        $timestamp = $this->createTimestampFromInputValue($value);
+
+        if ($timestamp === null) {
+            $this->addError('publishedAtInputValue', 'Укажи корректную дату публикации.');
+
+            return false;
+        }
+
+        $this->song->published_at = $timestamp;
+
+        return true;
+    }
+
+    private function createTimestampFromInputValue(string $value): int | null
+    {
+        $timezone = new DateTimeZone(date_default_timezone_get());
+        $formats = [
+            'Y-m-d\TH:i:s',
+            'Y-m-d\TH:i',
+        ];
+
+        foreach ($formats as $format) {
+            $date = DateTimeImmutable::createFromFormat('!' . $format, $value, $timezone);
+
+            if ($date instanceof DateTimeImmutable && $date->format($format) === $value) {
+                return $date->getTimestamp();
+            }
+        }
+
+        return null;
     }
 
     private function createEmptyRecordingModels(int $count): array
@@ -1024,6 +1116,15 @@ final class SongEditorForm extends Model
         }
     }
 
+    private function saveSongCover(): void
+    {
+        if ($this->songCoverUploadForm->coverFile instanceof UploadedFile === false) {
+            return;
+        }
+
+        $this->songCoverUploader->uploadCoverFile($this->song, $this->songCoverUploadForm->coverFile);
+    }
+
     private function deleteOriginalLanguageTranslations(): void
     {
         $originalLanguageId = $this->getOriginalLanguageId();
@@ -1362,6 +1463,11 @@ final class SongEditorForm extends Model
             $uploadForm->coverFile = UploadedFile::getInstance($uploadForm, '[' . $recordingIndex . ']coverFile');
             $uploadForm->videoFile = UploadedFile::getInstance($uploadForm, '[' . $recordingIndex . ']videoFile');
         }
+    }
+
+    private function loadSongCoverUploadFile(): void
+    {
+        $this->songCoverUploadForm->coverFile = UploadedFile::getInstance($this->songCoverUploadForm, 'coverFile');
     }
 
     private function prepareRecordingSlugs(): void

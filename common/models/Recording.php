@@ -6,6 +6,7 @@ namespace common\models;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -162,6 +163,9 @@ final class Recording extends ActiveRecord
         return $this->hasOne(MediaAsset::class, ['id' => 'cover_media_asset_id']);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function getMediaAssets(): ActiveQuery
     {
         return $this->hasMany(MediaAsset::class, ['id' => 'media_asset_id'])

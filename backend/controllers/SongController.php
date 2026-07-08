@@ -100,6 +100,7 @@ final class SongController extends AdminController
 
     /**
      * @throws NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionUpdate(int $id): string|Response
     {
@@ -169,7 +170,7 @@ final class SongController extends AdminController
 
     private function findModel(int $id): Song
     {
-        $model = Song::find()->with(['originalLanguage'])->andWhere(['id' => $id])->one();
+        $model = Song::find()->with(['coverMediaAsset', 'originalLanguage'])->andWhere(['id' => $id])->one();
 
         if ($model instanceof Song) {
             return $model;
