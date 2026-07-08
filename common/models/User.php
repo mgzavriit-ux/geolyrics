@@ -3,7 +3,7 @@
 namespace common\models;
 
 use Yii;
-use yii\base\NotSupportedException;
+use common\services\auth\JwtTokenService;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -13,11 +13,14 @@ use yii\web\IdentityInterface;
  *
  * @property int $id
  * @property string $username
+ * @property string|null $name
  * @property string $password_hash
- * @property string $password_reset_token
- * @property string $verification_token
+ * @property string|null $password_reset_token
+ * @property string|null $verification_token
  * @property string $email
  * @property string $auth_key
+ * @property string $role
+ * @property string|null $google_subject
  * @property int $status
  * @property int $created_at
  * @property int $updated_at
@@ -28,6 +31,9 @@ class User extends ActiveRecord implements IdentityInterface
     public const STATUS_DELETED = 0;
     public const STATUS_INACTIVE = 9;
     public const STATUS_ACTIVE = 10;
+    public const string ROLE_USER = 'user';
+    public const string ROLE_ADMIN = 'admin';
+
     /**
      * {@inheritdoc}
      */
@@ -54,6 +60,10 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['role', 'default', 'value' => self::ROLE_USER],
+            ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
+            [['name', 'google_subject'], 'string', 'max' => 255],
+            ['google_subject', 'unique'],
         ];
     }
 
@@ -70,7 +80,17 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        $params = Yii::$app->params['userJwtAuth'] ?? [];
+        $secret = is_array($params) ? (string) ($params['secret'] ?? '') : '';
+        $issuer = is_array($params) ? (string) ($params['issuer'] ?? 'geolyrics-api') : 'geolyrics-api';
+        $audience = is_array($params) ? (string) ($params['audience'] ?? 'geolyrics-client') : 'geolyrics-client';
+        $userId = (new JwtTokenService($secret, $issuer, $audience))->findUserIdByAccessToken((string) $token);
+
+        if ($userId === null) {
+            return null;
+        }
+
+        return static::findOne(['id' => $userId, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -82,6 +102,47 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    /**
+     * Finds active user by email.
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail(string $email)
+    {
+        return static::findOne([
+            'email' => mb_strtolower($email),
+            'status' => self::STATUS_ACTIVE,
+        ]);
+    }
+
+    /**
+     * Finds user by email without status filtering.
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findAnyByEmail(string $email)
+    {
+        return static::findOne([
+            'email' => mb_strtolower($email),
+        ]);
+    }
+
+    /**
+     * Finds active user by Google subject.
+     *
+     * @param string $googleSubject
+     * @return static|null
+     */
+    public static function findByGoogleSubject(string $googleSubject)
+    {
+        return static::findOne([
+            'google_subject' => $googleSubject,
+            'status' => self::STATUS_ACTIVE,
+        ]);
     }
 
     /**
@@ -166,6 +227,35 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    public function getDisplayName(): string
+    {
+        $name = trim((string) $this->name);
+
+        if ($name !== '') {
+            return $name;
+        }
+
+        return (string) $this->username;
+    }
+
+    public function getRoleList(): array
+    {
+        return [
+            self::ROLE_USER => 'User',
+            self::ROLE_ADMIN => 'Admin',
+        ];
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
     }
 
     /**

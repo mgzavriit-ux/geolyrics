@@ -25,7 +25,9 @@ final class UserController extends Controller
 
         $user = new User();
         $user->username = $username;
+        $user->name = $username;
         $user->email = $email;
+        $user->role = User::ROLE_ADMIN;
         $user->status = User::STATUS_ACTIVE;
         $user->setPassword($password);
         $user->generateAuthKey();

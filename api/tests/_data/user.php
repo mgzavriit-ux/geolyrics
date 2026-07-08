@@ -9,6 +9,7 @@ return [
         'created_at' => '1391885313',
         'updated_at' => '1391885313',
         'email' => 'brady.renner@rutherford.com',
+        'role' => 'user',
     ],
     [
         'username' => 'troy.becker',
@@ -19,6 +20,7 @@ return [
         'updated_at' => '1391885313',
         'email' => 'nicolas.dianna@hotmail.com',
         'status' => '0',
+        'role' => 'user',
     ],
     [
         'username' => 'test.test',
@@ -30,6 +32,7 @@ return [
         'created_at' => '1548675330',
         'updated_at' => '1548675330',
         'verification_token' => '4ch0qbfhvWwkcuWqjN8SWRq72SOw1KYT_1548675330',
+        'role' => 'user',
     ],
     [
         'username' => 'test2.test',
@@ -41,5 +44,6 @@ return [
         'created_at' => '1548675330',
         'updated_at' => '1548675330',
         'verification_token' => 'already_used_token_1548675330',
+        'role' => 'user',
     ],
 ];

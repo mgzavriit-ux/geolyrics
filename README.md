@@ -76,6 +76,27 @@ docker compose exec php php yii user/create-admin admin admin@example.com Strong
 
 Важно: локально в проекте TLS не настроен, поэтому домены нужно открывать именно по `http`, а не по `https`.
 
+## Подпись API-запросов
+
+Все `/v1/...` JSON endpoints требуют JWT-подпись в заголовке `X-GeoLyrics-Request-JWT`.
+Токен подписывается HS256 секретом `API_REQUEST_JWT_SECRET` и привязан к методу и URI запроса.
+В production секрет обязательно должен быть задан через env; в dev без env используется локальный fallback `dev-geolyrics-request-jwt-secret`.
+
+## Авторизация пользователей
+
+Пользовательская авторизация живет в `/v1/auth/*` и работает поверх подписи API-запросов:
+
+- `POST /v1/auth/register` — регистрация по email, поля `name`, `email`, `password`.
+- `POST /v1/auth/login` — вход по email, поля `email`, `password`.
+- `POST /v1/auth/google` — вход через Google, поле `idToken`.
+- `POST /v1/auth/refresh` — обновление пары токенов, поле `refreshToken`.
+- `POST /v1/auth/logout` — отзыв refresh-токена, поле `refreshToken`.
+- `GET /v1/auth/me` — текущий пользователь, нужен `Authorization: Bearer <accessToken>`.
+
+Access token — короткоживущий JWT (`USER_AUTH_ACCESS_TOKEN_TTL`, по умолчанию 15 минут).
+Refresh token хранится в БД только в виде SHA-256 hash и ротируется при обновлении.
+Для Google auth нужно задать `GOOGLE_AUTH_CLIENT_IDS` через запятую.
+
 Важно: на `Docker Desktop` для macOS/Windows IP контейнеров из bridge-сети обычно не маршрутизируются с хоста. В таком окружении домены в `/etc/hosts` нужно маппить на `127.0.0.1`:
 
 ```text

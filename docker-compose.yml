@@ -8,6 +8,9 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@geolyrics.ge}
       API_HOST: ${API_HOST:-api.geolyrics.ge}
       API_COOKIE_VALIDATION_KEY: ${API_COOKIE_VALIDATION_KEY:-api-change-me}
+      API_REQUEST_JWT_AUDIENCE: ${API_REQUEST_JWT_AUDIENCE:-geolyrics-api}
+      API_REQUEST_JWT_ISSUER: ${API_REQUEST_JWT_ISSUER:-geovue}
+      API_REQUEST_JWT_SECRET: ${API_REQUEST_JWT_SECRET:-}
       API_URL: ${API_URL:-http://api.geolyrics.ge}
       BACKEND_COOKIE_VALIDATION_KEY: ${BACKEND_COOKIE_VALIDATION_KEY:-backend-change-me}
       BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
@@ -26,6 +29,12 @@ services:
       STORAGE_BASE_PATH: /app/storage/uploads
       STORAGE_BASE_URL: ${STORAGE_BASE_URL:-/uploads}
       SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@geolyrics.ge}
+      GOOGLE_AUTH_CLIENT_IDS: ${GOOGLE_AUTH_CLIENT_IDS:-}
+      USER_AUTH_ACCESS_TOKEN_TTL: ${USER_AUTH_ACCESS_TOKEN_TTL:-900}
+      USER_AUTH_JWT_AUDIENCE: ${USER_AUTH_JWT_AUDIENCE:-geolyrics-client}
+      USER_AUTH_JWT_ISSUER: ${USER_AUTH_JWT_ISSUER:-geolyrics-api}
+      USER_AUTH_JWT_SECRET: ${USER_AUTH_JWT_SECRET:-}
+      USER_AUTH_REFRESH_TOKEN_TTL: ${USER_AUTH_REFRESH_TOKEN_TTL:-2592000}
       YII_DEBUG: ${YII_DEBUG:-1}
       YII_ENV: ${YII_ENV:-dev}
     volumes:
@@ -52,6 +61,9 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@geolyrics.ge}
       API_HOST: ${API_HOST:-api.geolyrics.ge}
       API_COOKIE_VALIDATION_KEY: ${API_COOKIE_VALIDATION_KEY:-api-change-me}
+      API_REQUEST_JWT_AUDIENCE: ${API_REQUEST_JWT_AUDIENCE:-geolyrics-api}
+      API_REQUEST_JWT_ISSUER: ${API_REQUEST_JWT_ISSUER:-geovue}
+      API_REQUEST_JWT_SECRET: ${API_REQUEST_JWT_SECRET:-}
       API_URL: ${API_URL:-http://api.geolyrics.ge}
       BACKEND_COOKIE_VALIDATION_KEY: ${BACKEND_COOKIE_VALIDATION_KEY:-backend-change-me}
       BACKEND_HOST: ${BACKEND_HOST:-admin.geolyrics.ge}
@@ -70,6 +82,12 @@ services:
       STORAGE_BASE_PATH: /app/storage/uploads
       STORAGE_BASE_URL: ${STORAGE_BASE_URL:-/uploads}
       SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@geolyrics.ge}
+      GOOGLE_AUTH_CLIENT_IDS: ${GOOGLE_AUTH_CLIENT_IDS:-}
+      USER_AUTH_ACCESS_TOKEN_TTL: ${USER_AUTH_ACCESS_TOKEN_TTL:-900}
+      USER_AUTH_JWT_AUDIENCE: ${USER_AUTH_JWT_AUDIENCE:-geolyrics-client}
+      USER_AUTH_JWT_ISSUER: ${USER_AUTH_JWT_ISSUER:-geolyrics-api}
+      USER_AUTH_JWT_SECRET: ${USER_AUTH_JWT_SECRET:-}
+      USER_AUTH_REFRESH_TOKEN_TTL: ${USER_AUTH_REFRESH_TOKEN_TTL:-2592000}
       YII_DEBUG: ${YII_DEBUG:-1}
       YII_ENV: ${YII_ENV:-dev}
     volumes:
