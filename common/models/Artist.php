@@ -75,7 +75,7 @@ final class Artist extends ActiveRecord
             'id' => 'ID',
             'slug' => 'Slug',
             'type' => 'Тип',
-            'default_name' => 'Основное имя',
+            'default_name' => 'Оригинальное имя',
             'publication_status' => 'Статус',
             'published_at' => 'Дата публикации',
             'created_at' => 'Создан',

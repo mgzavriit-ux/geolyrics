@@ -30,6 +30,7 @@ use yii\web\UploadedFile;
 
 final class SongEditorForm extends Model
 {
+    private const ARTIST_LIST_LANGUAGE_CODE = 'ru';
     private const ORIGINAL_LANGUAGE_CODE = 'ka';
     private const SONG_TEXT_FORM_NAME = 'songFullText';
 
@@ -253,10 +254,15 @@ final class SongEditorForm extends Model
     public function getArtistItems(): array
     {
         $items = [];
+        $languageId = $this->getArtistListLanguageId();
 
         foreach ($this->artists as $artist) {
-            $items[$artist->id] = $artist->default_name;
+            $items[$artist->id] = $languageId === null
+                ? $artist->default_name
+                : $artist->getNameByLanguageId($languageId);
         }
+
+        asort($items, SORT_NATURAL | SORT_FLAG_CASE);
 
         return $items;
     }
@@ -762,6 +768,17 @@ final class SongEditorForm extends Model
     private function getDb(): Connection
     {
         return Yii::$app->db;
+    }
+
+    private function getArtistListLanguageId(): int | null
+    {
+        foreach ($this->languages as $language) {
+            if ($language->code === self::ARTIST_LIST_LANGUAGE_CODE) {
+                return (int) $language->id;
+            }
+        }
+
+        return null;
     }
 
     private function getStorage(): \common\components\storage\StorageInterface
