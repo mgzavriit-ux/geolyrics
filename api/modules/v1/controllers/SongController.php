@@ -86,6 +86,7 @@ final class SongController extends JsonRestController
     {
         $this->applySearchFilter($query);
         $this->applyArtistFilter($query);
+        $this->applyGenreFilter($query);
         $this->applyTagFilter($query);
         $this->applyHasAudioFilter($query);
         $this->applyHasChordsFilter($query);
@@ -110,6 +111,7 @@ final class SongController extends JsonRestController
             ['exists', $this->createSongLineTranslationSearchQuery($searchValue)],
             ['exists', $this->createRecordingSearchQuery($searchValue)],
             ['exists', $this->createArtistSearchQuery($searchValue)],
+            ['exists', $this->createGenreSearchQuery($searchValue)],
             ['exists', $this->createTagSearchQuery($searchValue)],
         ];
 
@@ -155,6 +157,25 @@ final class SongController extends JsonRestController
                 ->innerJoin(['t' => '{{%tag}}'], 't.id = st.tag_id')
                 ->where('st.song_id = s.id')
                 ->andWhere(['t.slug' => $tag]),
+        ]);
+    }
+
+    protected function applyGenreFilter(ActiveQuery $query): void
+    {
+        $genre = $this->findStringRequestParam('genre');
+
+        if ($genre === '') {
+            return;
+        }
+
+        $query->andWhere([
+            'exists',
+            (new Query())
+                ->select(new Expression('1'))
+                ->from(['sg' => '{{%song_genre}}'])
+                ->innerJoin(['g' => '{{%genre}}'], 'g.id = sg.genre_id')
+                ->where('sg.song_id = s.id')
+                ->andWhere(['g.slug' => $genre]),
         ]);
     }
 
@@ -300,6 +321,7 @@ final class SongController extends JsonRestController
     {
         $relations = [
             'coverMediaAsset',
+            'genres.translations.language',
             'originalLanguage',
             'recordings.coverMediaAsset',
             'recordings.recordingMediaEntries.mediaAsset',
@@ -307,7 +329,7 @@ final class SongController extends JsonRestController
             'recordings.recordingArtists.artist.translations.language',
             'songArrangements',
             'songLines.translations.language',
-            'tags',
+            'tags.translations.language',
             'translations.language',
         ];
 
@@ -325,6 +347,7 @@ final class SongController extends JsonRestController
     {
         $relations = [
             'coverMediaAsset',
+            'genres.translations.language',
             'originalLanguage',
             'recordings.recordingArtists.artist.artistImages.mediaAsset',
             'translations.language',
@@ -333,6 +356,7 @@ final class SongController extends JsonRestController
             'recordings.coverMediaAsset',
             'recordings.recordingMediaEntries.mediaAsset',
             'recordings.recordingArtists.artist.translations.language',
+            'tags.translations.language',
         ];
 
         if ($this->hasSongTitleTransliterationTable()) {
@@ -452,11 +476,31 @@ final class SongController extends JsonRestController
             ->select(new Expression('1'))
             ->from(['st' => '{{%song_tag}}'])
             ->innerJoin(['t' => '{{%tag}}'], 't.id = st.tag_id')
+            ->leftJoin(['tt' => '{{%tag_translation}}'], 'tt.tag_id = t.id')
             ->where('st.song_id = s.id')
             ->andWhere([
                 'or',
                 ['like', 't.default_name', $searchValue],
                 ['like', 't.slug', $searchValue],
+                ['like', 'tt.name', $searchValue],
+                ['like', 'tt.description', $searchValue],
+            ]);
+    }
+
+    private function createGenreSearchQuery(string $searchValue): Query
+    {
+        return (new Query())
+            ->select(new Expression('1'))
+            ->from(['sg' => '{{%song_genre}}'])
+            ->innerJoin(['g' => '{{%genre}}'], 'g.id = sg.genre_id')
+            ->leftJoin(['gt' => '{{%genre_translation}}'], 'gt.genre_id = g.id')
+            ->where('sg.song_id = s.id')
+            ->andWhere([
+                'or',
+                ['like', 'g.default_name', $searchValue],
+                ['like', 'g.slug', $searchValue],
+                ['like', 'gt.name', $searchValue],
+                ['like', 'gt.description', $searchValue],
             ]);
     }
 

@@ -62,6 +62,18 @@ $menuItems = [
         'active' => $controllerId === 'song',
     ],
     [
+        'label' => 'Жанры',
+        'url' => ['/genre/index'],
+        'icon' => 'bi-music-note-beamed',
+        'active' => $controllerId === 'genre',
+    ],
+    [
+        'label' => 'Теги',
+        'url' => ['/tag/index'],
+        'icon' => 'bi-tags',
+        'active' => $controllerId === 'tag',
+    ],
+    [
         'label' => 'Записи',
         'url' => ['/recording/index'],
         'icon' => 'bi-disc',

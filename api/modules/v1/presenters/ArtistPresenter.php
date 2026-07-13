@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace api\modules\v1\presenters;
 
+use common\components\storage\StorageInterface;
 use common\models\Artist;
 use common\models\Recording;
 use common\models\Song;
@@ -11,6 +12,10 @@ use common\models\SongTranslation;
 
 final class ArtistPresenter
 {
+    public function __construct(private readonly StorageInterface $storage)
+    {
+    }
+
     public function presentListItem(Artist $artist): array
     {
         return [
@@ -18,9 +23,10 @@ final class ArtistPresenter
             'slug' => $artist->slug,
             'type' => $artist->type,
             'defaultName' => $artist->default_name,
+            'imageUrl' => $this->findArtistImageUrl($artist),
             'publicationStatus' => $artist->publication_status,
             'publishedAt' => $artist->published_at,
-            'translations' => $this->presentArtistTranslations($artist),
+            'translations' => $this->presentArtistListTranslations($artist),
         ];
     }
 
@@ -31,9 +37,10 @@ final class ArtistPresenter
             'slug' => $artist->slug,
             'type' => $artist->type,
             'defaultName' => $artist->default_name,
+            'imageUrl' => $this->findArtistImageUrl($artist),
             'publicationStatus' => $artist->publication_status,
             'publishedAt' => $artist->published_at,
-            'translations' => $this->presentArtistTranslations($artist),
+            'translations' => $this->presentArtistDetailTranslations($artist),
             'songs' => $this->presentSongs($artist),
             'recordings' => $this->presentRecordings($artist),
         ];
@@ -112,9 +119,33 @@ final class ArtistPresenter
     }
 
     /**
+     * @return array<string, array{name:string}>
+     */
+    private function presentArtistListTranslations(Artist $artist): array
+    {
+        $translations = [];
+
+        foreach ($artist->translations as $artistTranslation) {
+            $language = $artistTranslation->language;
+
+            if ($language === null) {
+                continue;
+            }
+
+            $translations[$language->code] = [
+                'name' => $artistTranslation->name,
+            ];
+        }
+
+        ksort($translations);
+
+        return $translations;
+    }
+
+    /**
      * @return array<string, array{name:string, biography:string|null}>
      */
-    private function presentArtistTranslations(Artist $artist): array
+    private function presentArtistDetailTranslations(Artist $artist): array
     {
         $translations = [];
 
@@ -134,6 +165,17 @@ final class ArtistPresenter
         ksort($translations);
 
         return $translations;
+    }
+
+    private function findArtistImageUrl(Artist $artist): string | null
+    {
+        foreach ($artist->artistImages as $artistImage) {
+            if ($artistImage->mediaAsset !== null) {
+                return $this->storage->getPublicUrl($artistImage->mediaAsset->path);
+            }
+        }
+
+        return null;
     }
 
     /**

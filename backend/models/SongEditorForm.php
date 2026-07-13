@@ -7,6 +7,7 @@ namespace backend\models;
 use DateTimeImmutable;
 use DateTimeZone;
 use common\models\Artist;
+use common\models\Genre;
 use common\models\Language;
 use common\models\Recording;
 use common\models\RecordingArtist;
@@ -15,6 +16,7 @@ use common\models\SongArrangement;
 use common\models\SongLine;
 use common\models\SongLineTranslation;
 use common\models\SongTranslation;
+use common\models\Tag;
 use common\services\CatalogSlugGenerator;
 use common\services\ChordSheetParser;
 use common\services\RecordingRemover;
@@ -35,6 +37,14 @@ final class SongEditorForm extends Model
     private const SONG_TEXT_FORM_NAME = 'songFullText';
 
     public string $publishedAtInputValue = '';
+    /**
+     * @var int[]
+     */
+    public $genreIds = [];
+    /**
+     * @var int[]
+     */
+    public $tagIds = [];
 
     /**
      * @var Artist[]
@@ -83,10 +93,18 @@ final class SongEditorForm extends Model
      */
     private array $songArrangementModels = [];
     private ChordSheetParser $chordSheetParser;
+    /**
+     * @var Genre[]
+     */
+    private array $genres;
     private CatalogSlugGenerator $slugGenerator;
     private RecordingMediaUploader $recordingMediaUploader;
     private SongCoverUploadForm $songCoverUploadForm;
     private SongCoverUploader $songCoverUploader;
+    /**
+     * @var Tag[]
+     */
+    private array $tags;
 
     /**
      * @var array<int, bool>
@@ -130,14 +148,24 @@ final class SongEditorForm extends Model
 
     /**
      * @param Artist[] $artists
+     * @param Genre[] $genres
      * @param Language[] $languages
+     * @param Tag[] $tags
      */
-    public function __construct(Song $song, array $languages, array $artists, array $config = [])
-    {
+    public function __construct(
+        Song $song,
+        array $languages,
+        array $artists,
+        array $tags,
+        array $genres,
+        array $config = [],
+    ) {
         $this->artists = $artists;
+        $this->genres = $genres;
         $this->languages = $languages;
         $this->recordingArtistPrototype = new RecordingArtist();
         $this->recordingPrototype = new Recording();
+        $this->tags = $tags;
         $this->chordSheetParser = new ChordSheetParser();
         $this->recordingRemover = new RecordingRemover($this->getStorage());
         $this->recordingMediaUploader = new RecordingMediaUploader($this->getStorage());
@@ -151,6 +179,7 @@ final class SongEditorForm extends Model
         $this->publishedAtInputValue = $this->createPublishedAtInputValue();
         $this->applyDefaultOriginalLanguage();
         $this->initializeModels();
+        $this->initializeCatalogRelationIds();
         $this->prepareDefaults();
         $this->rebuildSongTextValues();
     }
@@ -176,6 +205,7 @@ final class SongEditorForm extends Model
         $isLoaded = Model::loadMultiple($this->recordingArtistFlatModels, $data) || $isLoaded;
 
         if ($isLoaded) {
+            $this->normalizeCatalogRelationIds();
             $this->rebuildSongTextValues();
             $this->loadSongTextData($data);
             $this->applySongTextValuesToLineModels();
@@ -201,6 +231,7 @@ final class SongEditorForm extends Model
         try {
             $this->song->save(false);
             $this->saveSongCover();
+            $this->saveSongCatalogRelations();
             $this->saveSongArrangements();
             $this->saveSongTranslations();
             $this->saveSongLines();
@@ -241,13 +272,18 @@ final class SongEditorForm extends Model
     {
         return [
             [['publishedAtInputValue'], 'safe'],
+            [['genreIds', 'tagIds'], 'each', 'rule' => ['integer']],
+            [['genreIds'], 'validateGenreIds'],
+            [['tagIds'], 'validateTagIds'],
         ];
     }
 
     public function attributeLabels(): array
     {
         return [
+            'genreIds' => 'Жанры',
             'publishedAtInputValue' => 'Дата публикации',
+            'tagIds' => 'Теги',
         ];
     }
 
@@ -278,6 +314,11 @@ final class SongEditorForm extends Model
         return $items;
     }
 
+    public function getGenreItems(): array
+    {
+        return $this->createCatalogItems($this->genres);
+    }
+
     public function getLanguageLabels(): array
     {
         $items = [];
@@ -292,6 +333,11 @@ final class SongEditorForm extends Model
     public function getPublicationStatusItems(): array
     {
         return $this->song->getPublicationStatusList();
+    }
+
+    public function getTagItems(): array
+    {
+        return $this->createCatalogItems($this->tags);
     }
 
     public function getRecordingArtistFlatModels(): array
@@ -581,6 +627,24 @@ final class SongEditorForm extends Model
         return false;
     }
 
+    public function validateGenreIds(string $attribute): void
+    {
+        $this->validateCatalogIds(
+            $attribute,
+            $this->genres,
+            'Выбран неизвестный жанр.',
+        );
+    }
+
+    public function validateTagIds(string $attribute): void
+    {
+        $this->validateCatalogIds(
+            $attribute,
+            $this->tags,
+            'Выбран неизвестный тег.',
+        );
+    }
+
     private function applyDefaultOriginalLanguage(): void
     {
         if ($this->song->original_language_id !== null) {
@@ -647,6 +711,26 @@ final class SongEditorForm extends Model
         }
 
         return null;
+    }
+
+    /**
+     * @param Genre[]|Tag[] $models
+     * @return array<int, string>
+     */
+    private function createCatalogItems(array $models): array
+    {
+        $items = [];
+        $languageId = $this->getArtistListLanguageId();
+
+        foreach ($models as $model) {
+            $items[(int) $model->id] = $languageId === null
+                ? $model->default_name
+                : $model->getNameByLanguageId($languageId);
+        }
+
+        asort($items, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return $items;
     }
 
     private function createEmptyRecordingModels(int $count): array
@@ -815,6 +899,21 @@ final class SongEditorForm extends Model
         return ($lineIndex + 1) * 10;
     }
 
+    /**
+     * @param Genre[]|Tag[] $models
+     * @return int[]
+     */
+    private function findRelatedModelIds(array $models): array
+    {
+        $ids = [];
+
+        foreach ($models as $model) {
+            $ids[] = (int) $model->id;
+        }
+
+        return $ids;
+    }
+
     private function hasLineTranslationContent(int $lineIndex): bool
     {
         foreach ($this->songLineTranslationModels[$lineIndex] ?? [] as $translationModel) {
@@ -863,6 +962,52 @@ final class SongEditorForm extends Model
         $this->initializeSongTranslationModels();
         $this->initializeSongLineModels();
         $this->initializeRecordingModels();
+    }
+
+    private function initializeCatalogRelationIds(): void
+    {
+        $this->genreIds = $this->findRelatedModelIds($this->song->genres);
+        $this->tagIds = $this->findRelatedModelIds($this->song->tags);
+    }
+
+    private function normalizeCatalogRelationIds(): void
+    {
+        $this->genreIds = $this->normalizeSelectedIds($this->genreIds);
+        $this->tagIds = $this->normalizeSelectedIds($this->tagIds);
+    }
+
+    /**
+     * @return int[]
+     */
+    private function normalizeSelectedIds(array|string|int|null $values): array
+    {
+        if (is_array($values) === false) {
+            $values = [$values];
+        }
+
+        $ids = [];
+
+        foreach ($values as $value) {
+            if ($value === null) {
+                continue;
+            }
+
+            $stringValue = trim((string) $value);
+
+            if ($stringValue === '') {
+                continue;
+            }
+
+            $id = (int) $stringValue;
+
+            if ($id < 1) {
+                continue;
+            }
+
+            $ids[$id] = $id;
+        }
+
+        return array_values($ids);
     }
 
     private function initializeSongArrangementModels(): void
@@ -946,7 +1091,9 @@ final class SongEditorForm extends Model
 
     private function isSongLineFilled(int $lineIndex): bool
     {
-        return $this->songLineModels[$lineIndex]->hasContent() || $this->hasLineTranslationContent($lineIndex);
+        return $this->songLineModels[$lineIndex]->hasContent()
+            || $this->songLineModels[$lineIndex]->hasTiming()
+            || $this->hasLineTranslationContent($lineIndex);
     }
 
     private function prepareDefaults(): void
@@ -1142,6 +1289,40 @@ final class SongEditorForm extends Model
         $this->songCoverUploader->uploadCoverFile($this->song, $this->songCoverUploadForm->coverFile);
     }
 
+    private function saveSongCatalogRelations(): void
+    {
+        $this->saveSongGenres();
+        $this->saveSongTags();
+    }
+
+    private function saveSongGenres(): void
+    {
+        $this->song->unlinkAll('genres', true);
+        $genresById = ArrayHelper::index($this->genres, 'id');
+
+        foreach ($this->genreIds as $genreId) {
+            $genre = $genresById[(int) $genreId] ?? null;
+
+            if ($genre instanceof Genre) {
+                $this->song->link('genres', $genre);
+            }
+        }
+    }
+
+    private function saveSongTags(): void
+    {
+        $this->song->unlinkAll('tags', true);
+        $tagsById = ArrayHelper::index($this->tags, 'id');
+
+        foreach ($this->tagIds as $tagId) {
+            $tag = $tagsById[(int) $tagId] ?? null;
+
+            if ($tag instanceof Tag) {
+                $this->song->link('tags', $tag);
+            }
+        }
+    }
+
     private function deleteOriginalLanguageTranslations(): void
     {
         $originalLanguageId = $this->getOriginalLanguageId();
@@ -1206,6 +1387,28 @@ final class SongEditorForm extends Model
         }
 
         return $isValid;
+    }
+
+    /**
+     * @param Genre[]|Tag[] $models
+     */
+    private function validateCatalogIds(string $attribute, array $models, string $message): void
+    {
+        $modelIds = [];
+
+        foreach ($models as $model) {
+            $modelIds[(int) $model->id] = true;
+        }
+
+        foreach ($this->{$attribute} as $id) {
+            if (isset($modelIds[(int) $id])) {
+                continue;
+            }
+
+            $this->addError($attribute, $message);
+
+            return;
+        }
     }
 
     private function validateRecordingModels(): bool

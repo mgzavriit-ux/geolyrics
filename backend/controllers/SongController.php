@@ -7,8 +7,10 @@ namespace backend\controllers;
 use backend\models\SongEditorForm;
 use common\models\Artist;
 use backend\models\SongSearch;
+use common\models\Genre;
 use common\models\Language;
 use common\models\Song;
+use common\models\Tag;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -143,6 +145,17 @@ final class SongController extends AdminController
             ->all();
     }
 
+    /**
+     * @return Genre[]
+     */
+    private function findGenres(): array
+    {
+        return Genre::find()
+            ->with(['translations'])
+            ->orderBy(['default_name' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
+    }
+
     private function findLanguageIdByCode(string $code): int | null
     {
         $languageId = Language::find()
@@ -168,9 +181,28 @@ final class SongController extends AdminController
             ->all();
     }
 
+    /**
+     * @return Tag[]
+     */
+    private function findTags(): array
+    {
+        return Tag::find()
+            ->with(['translations'])
+            ->orderBy(['default_name' => SORT_ASC, 'id' => SORT_ASC])
+            ->all();
+    }
+
     private function findModel(int $id): Song
     {
-        $model = Song::find()->with(['coverMediaAsset', 'originalLanguage'])->andWhere(['id' => $id])->one();
+        $model = Song::find()
+            ->with([
+                'coverMediaAsset',
+                'genres',
+                'originalLanguage',
+                'tags',
+            ])
+            ->andWhere(['id' => $id])
+            ->one();
 
         if ($model instanceof Song) {
             return $model;
@@ -200,6 +232,12 @@ final class SongController extends AdminController
 
     private function createFormModel(Song $song): SongEditorForm
     {
-        return new SongEditorForm($song, $this->findLanguages(), $this->findArtists());
+        return new SongEditorForm(
+            $song,
+            $this->findLanguages(),
+            $this->findArtists(),
+            $this->findTags(),
+            $this->findGenres(),
+        );
     }
 }

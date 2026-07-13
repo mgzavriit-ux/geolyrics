@@ -297,3 +297,125 @@ a.desc:after {
     padding-left: 0;
     list-style: none;
 }
+
+.song-line-timing-rate {
+    width: 6rem;
+}
+
+.song-line-timing-shift {
+    width: 16rem;
+}
+
+.song-line-timing-status {
+    min-width: 9rem;
+    font-variant-numeric: tabular-nums;
+    color: #667085;
+}
+
+.song-line-item {
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.song-line-timing-current {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.16rem rgba(13, 110, 253, 0.16);
+}
+
+.song-line-timing-done:not(.song-line-timing-current) {
+    background: #f6fbf7;
+}
+
+.song-line-timing-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #ffffff;
+}
+
+.song-line-timing-lines {
+    background: #f8fafc;
+}
+
+.song-line-timing-line {
+    display: grid;
+    grid-template-columns: 1.25rem 3rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid #d7deea;
+    border-radius: 0.5rem;
+    background: #ffffff;
+    color: #243447;
+    text-align: left;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.song-line-timing-line:last-child {
+    margin-bottom: 0;
+}
+
+.song-line-timing-line:hover {
+    border-color: #b8cbf3;
+}
+
+.song-line-timing-line-current {
+    border-color: #0d6efd;
+    background: #eef4ff;
+    box-shadow: 0 0 0 0.16rem rgba(13, 110, 253, 0.16);
+}
+
+.song-line-timing-line-done:not(.song-line-timing-line-current) {
+    border-color: #b8e0c2;
+    background: #f6fbf7;
+}
+
+.song-line-timing-cursor {
+    display: flex;
+    justify-content: center;
+}
+
+.song-line-timing-line-current .song-line-timing-cursor::before {
+    display: block;
+    width: 0.72rem;
+    height: 0.72rem;
+    border-radius: 50%;
+    background: #0d6efd;
+    content: "";
+    animation: song-line-timing-cursor-pulse 0.9s ease-in-out infinite;
+}
+
+.song-line-timing-line-number {
+    font-weight: 700;
+    color: #667085;
+    font-variant-numeric: tabular-nums;
+}
+
+.song-line-timing-line-text {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 1.05rem;
+    line-height: 1.35;
+}
+
+.song-line-timing-line-range {
+    display: block;
+    margin-top: 0.2rem;
+    color: #667085;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+}
+
+@keyframes song-line-timing-cursor-pulse {
+    0%,
+    100% {
+        opacity: 0.45;
+        transform: scale(0.82);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

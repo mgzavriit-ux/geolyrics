@@ -41,6 +41,7 @@
 
         if (songLineItems !== null) {
             initializeSongLineManager(root, songLineItems, addSongLineButton);
+            initializeSongLineTimingEditor(root, songLineItems);
         }
 
         if (songArrangementItems !== null) {
@@ -72,6 +73,7 @@
         }
 
         updateSongLinePresentation(root);
+        updateSongLineTimingEditor(root);
 
         return item;
     }
@@ -274,6 +276,212 @@
         updateSongLinePresentation(root);
     }
 
+    function initializeSongLineTimingEditor(root, songLineItems) {
+        const editor = root.querySelector('[data-role="song-line-timing-editor"]');
+
+        if (editor === null) {
+            return;
+        }
+
+        const audio = editor.querySelector('[data-role="song-line-timing-audio"]');
+        const sourceSelect = editor.querySelector('[data-role="song-line-timing-audio-source"]');
+        const playButton = editor.querySelector('[data-role="song-line-timing-play"]');
+        const tapButton = editor.querySelector('[data-role="song-line-timing-tap"]');
+        const undoButton = editor.querySelector('[data-role="song-line-timing-undo"]');
+        const autoEndInput = editor.querySelector('[data-role="song-line-timing-auto-end"]');
+        const playbackRateSelect = editor.querySelector('[data-role="song-line-timing-playback-rate"]');
+        const status = editor.querySelector('[data-role="song-line-timing-status"]');
+        const linesContainer = editor.querySelector('[data-role="song-line-timing-lines"]');
+        const saveButton = editor.querySelector('[data-role="song-line-timing-save"]');
+        const shiftInput = editor.querySelector('[data-role="song-line-timing-shift-ms"]');
+        const shiftBackwardButton = editor.querySelector('[data-role="song-line-timing-shift-backward"]');
+        const shiftForwardButton = editor.querySelector('[data-role="song-line-timing-shift-forward"]');
+        const history = [];
+        let currentLineIndex = findInitialSongLineTimingIndex(songLineItems);
+        let shouldScrollCurrentLine = false;
+
+        if (
+            audio === null
+            || playButton === null
+            || tapButton === null
+            || undoButton === null
+            || linesContainer === null
+        ) {
+            return;
+        }
+
+        editor.songLineTimingUpdate = function () {
+            const visibleItems = getVisibleSongLineItems(songLineItems);
+
+            if (currentLineIndex > visibleItems.length) {
+                currentLineIndex = Math.max(0, visibleItems.length);
+            }
+
+            updateSongLineTimingPresentation(
+                visibleItems,
+                currentLineIndex,
+                audio,
+                tapButton,
+                undoButton,
+                history,
+                status,
+                linesContainer,
+                shouldScrollCurrentLine,
+            );
+            shouldScrollCurrentLine = false;
+        };
+
+        if (sourceSelect !== null) {
+            sourceSelect.addEventListener('change', function () {
+                updateSongLineTimingAudioSource(audio, sourceSelect);
+                updateSongLineTimingPlayButton(playButton, audio);
+                editor.songLineTimingUpdate();
+            });
+        }
+
+        playButton.addEventListener('click', function () {
+            toggleSongLineTimingPlayback(audio, tapButton);
+        });
+
+        tapButton.addEventListener('click', function () {
+            currentLineIndex = tapSongLineStart(
+                songLineItems,
+                currentLineIndex,
+                audio,
+                autoEndInput,
+                history,
+            );
+            shouldScrollCurrentLine = true;
+            editor.songLineTimingUpdate();
+
+            if (currentLineIndex >= getVisibleSongLineItems(songLineItems).length && saveButton !== null) {
+                saveButton.focus({ preventScroll: true });
+
+                return;
+            }
+
+            tapButton.focus({ preventScroll: true });
+        });
+
+        undoButton.addEventListener('click', function () {
+            currentLineIndex = undoSongLineTiming(history, currentLineIndex);
+            shouldScrollCurrentLine = true;
+            editor.songLineTimingUpdate();
+            tapButton.focus({ preventScroll: true });
+        });
+
+        if (shiftBackwardButton !== null) {
+            shiftBackwardButton.addEventListener('click', function () {
+                const shiftMilliseconds = findSongLineTimingShiftMilliseconds(shiftInput);
+
+                if (shiftMilliseconds === 0) {
+                    return;
+                }
+
+                shiftSongLineTiming(songLineItems, -shiftMilliseconds, currentLineIndex, history);
+                editor.songLineTimingUpdate();
+                shiftBackwardButton.focus({ preventScroll: true });
+            });
+        }
+
+        if (shiftForwardButton !== null) {
+            shiftForwardButton.addEventListener('click', function () {
+                const shiftMilliseconds = findSongLineTimingShiftMilliseconds(shiftInput);
+
+                if (shiftMilliseconds === 0) {
+                    return;
+                }
+
+                shiftSongLineTiming(songLineItems, shiftMilliseconds, currentLineIndex, history);
+                editor.songLineTimingUpdate();
+                shiftForwardButton.focus({ preventScroll: true });
+            });
+        }
+
+        if (playbackRateSelect !== null) {
+            playbackRateSelect.addEventListener('change', function () {
+                audio.playbackRate = Number(playbackRateSelect.value || '1');
+            });
+            audio.playbackRate = Number(playbackRateSelect.value || '1');
+        }
+
+        audio.addEventListener('play', function () {
+            updateSongLineTimingPlayButton(playButton, audio);
+        });
+        audio.addEventListener('pause', function () {
+            updateSongLineTimingPlayButton(playButton, audio);
+        });
+        audio.addEventListener('timeupdate', function () {
+            editor.songLineTimingUpdate();
+        });
+
+        linesContainer.addEventListener('click', function (event) {
+            if (event.target === null || typeof event.target.closest !== 'function') {
+                return;
+            }
+
+            const line = event.target.closest('[data-role="song-line-timing-line"]');
+
+            if (line === null) {
+                return;
+            }
+
+            currentLineIndex = Number(line.dataset.timingLineIndex || '0');
+            shouldScrollCurrentLine = true;
+            editor.songLineTimingUpdate();
+            tapButton.focus({ preventScroll: true });
+        });
+
+        editor.addEventListener('shown.bs.modal', function () {
+            currentLineIndex = findInitialSongLineTimingIndex(songLineItems);
+            shouldScrollCurrentLine = true;
+            editor.songLineTimingUpdate();
+            tapButton.focus({ preventScroll: true });
+        });
+
+        editor.addEventListener('hidden.bs.modal', function () {
+            audio.pause();
+        });
+
+        root.addEventListener('click', function (event) {
+            if (isSongLineTimingInteractiveTarget(event.target)) {
+                return;
+            }
+
+            if (event.target === null || typeof event.target.closest !== 'function') {
+                return;
+            }
+
+            const item = event.target.closest('[data-role="song-line-item"]');
+
+            if (item === null) {
+                return;
+            }
+
+            const visibleItems = getVisibleSongLineItems(songLineItems);
+            const itemIndex = visibleItems.indexOf(item);
+
+            if (itemIndex === -1) {
+                return;
+            }
+
+            currentLineIndex = itemIndex;
+            shouldScrollCurrentLine = true;
+            editor.songLineTimingUpdate();
+        });
+
+        root.addEventListener('input', function (event) {
+            if (isSongLineTimingInput(event.target) === false) {
+                return;
+            }
+
+            editor.songLineTimingUpdate();
+        });
+
+        updateSongLineTimingPlayButton(playButton, audio);
+        editor.songLineTimingUpdate();
+    }
+
     function initializeSongTextEditors(root) {
         root.querySelectorAll('[data-role="song-text-source"]').forEach(function (textarea) {
             if (textarea.dataset.dirtyInitialized === '1') {
@@ -320,7 +528,12 @@
     }
 
     function clearSongLineItem(item) {
-        item.querySelectorAll('[data-role="song-line-original-text"], [data-role="song-line-translation-text"]').forEach(function (input) {
+        item.querySelectorAll([
+            '[data-role="song-line-original-text"]',
+            '[data-role="song-line-start-ms"]',
+            '[data-role="song-line-end-ms"]',
+            '[data-role="song-line-translation-text"]',
+        ].join(', ')).forEach(function (input) {
             input.value = '';
         });
     }
@@ -458,6 +671,28 @@
         return Number(songLineItems.dataset.nextLineIndex || '0');
     }
 
+    function findInitialSongLineTimingIndex(songLineItems) {
+        const visibleItems = getVisibleSongLineItems(songLineItems);
+
+        for (let index = 0; index < visibleItems.length; index += 1) {
+            const startInput = findSongLineTimingStartInput(visibleItems[index]);
+
+            if (startInput !== null && startInput.value.trim() === '') {
+                return index;
+            }
+        }
+
+        return visibleItems.length;
+    }
+
+    function findSongLineTimingStartInput(item) {
+        return item.querySelector('[data-role="song-line-start-ms"]');
+    }
+
+    function findSongLineTimingEndInput(item) {
+        return item.querySelector('[data-role="song-line-end-ms"]');
+    }
+
     function getVisibleSongLineItems(songLineItems) {
         return Array.from(songLineItems.querySelectorAll('[data-role="song-line-item"]')).filter(function (item) {
             return item.classList.contains('d-none') === false;
@@ -520,6 +755,388 @@
         if (emptyState !== null) {
             emptyState.classList.toggle('d-none', visibleItems.length > 0);
         }
+    }
+
+    function updateSongLineTimingEditor(root) {
+        const editor = root.querySelector('[data-role="song-line-timing-editor"]');
+
+        if (editor === null || typeof editor.songLineTimingUpdate !== 'function') {
+            return;
+        }
+
+        editor.songLineTimingUpdate();
+    }
+
+    function updateSongLineTimingPresentation(
+        visibleItems,
+        currentLineIndex,
+        audio,
+        tapButton,
+        undoButton,
+        history,
+        status,
+        linesContainer,
+        shouldScrollCurrentLine,
+    ) {
+        syncSongLineTimingRows(visibleItems, linesContainer);
+
+        visibleItems.forEach(function (item, index) {
+            const startInput = findSongLineTimingStartInput(item);
+            const hasStart = startInput !== null && startInput.value.trim() !== '';
+            const modalLine = linesContainer.querySelector(
+                '[data-role="song-line-timing-line"][data-timing-line-index="' + String(index) + '"]',
+            );
+
+            item.classList.toggle('song-line-timing-current', index === currentLineIndex);
+            item.classList.toggle('song-line-timing-done', hasStart);
+
+            if (modalLine !== null) {
+                modalLine.classList.toggle('song-line-timing-line-current', index === currentLineIndex);
+                modalLine.classList.toggle('song-line-timing-line-done', hasStart);
+            }
+        });
+
+        tapButton.disabled = visibleItems.length === 0;
+        undoButton.disabled = history.length === 0;
+
+        if (status !== null) {
+            status.textContent = createSongLineTimingStatus(visibleItems, currentLineIndex, audio);
+        }
+
+        if (shouldScrollCurrentLine) {
+            scrollSongLineTimingLineIntoView(linesContainer, currentLineIndex);
+        }
+    }
+
+    function syncSongLineTimingRows(visibleItems, linesContainer) {
+        while (linesContainer.children.length > visibleItems.length) {
+            linesContainer.lastElementChild.remove();
+        }
+
+        while (linesContainer.children.length < visibleItems.length) {
+            linesContainer.appendChild(createSongLineTimingRowElement());
+        }
+
+        visibleItems.forEach(function (item, index) {
+            const row = linesContainer.children[index];
+            const number = row.querySelector('[data-role="song-line-timing-line-number"]');
+            const text = row.querySelector('[data-role="song-line-timing-line-text"]');
+            const range = row.querySelector('[data-role="song-line-timing-line-range"]');
+
+            row.dataset.timingLineIndex = String(index);
+
+            if (number !== null) {
+                number.textContent = String(index + 1);
+            }
+
+            if (text !== null) {
+                text.textContent = findSongLineTimingText(item);
+            }
+
+            if (range !== null) {
+                range.textContent = createSongLineTimingRangeText(item);
+            }
+        });
+
+        linesContainer.classList.toggle('song-line-timing-lines-empty', visibleItems.length === 0);
+    }
+
+    function createSongLineTimingRowElement() {
+        const row = document.createElement('button');
+        const cursor = document.createElement('span');
+        const number = document.createElement('span');
+        const body = document.createElement('span');
+        const text = document.createElement('span');
+        const range = document.createElement('span');
+
+        row.type = 'button';
+        row.className = 'song-line-timing-line';
+        row.dataset.role = 'song-line-timing-line';
+
+        cursor.className = 'song-line-timing-cursor';
+        cursor.setAttribute('aria-hidden', 'true');
+        cursor.textContent = '';
+
+        number.className = 'song-line-timing-line-number';
+        number.dataset.role = 'song-line-timing-line-number';
+
+        body.className = 'song-line-timing-line-body';
+
+        text.className = 'song-line-timing-line-text';
+        text.dataset.role = 'song-line-timing-line-text';
+
+        range.className = 'song-line-timing-line-range';
+        range.dataset.role = 'song-line-timing-line-range';
+
+        body.appendChild(text);
+        body.appendChild(range);
+        row.appendChild(cursor);
+        row.appendChild(number);
+        row.appendChild(body);
+
+        return row;
+    }
+
+    function findSongLineTimingText(item) {
+        const originalTextInput = item.querySelector('[data-role="song-line-original-text"]');
+        const originalText = originalTextInput === null ? '' : originalTextInput.value.trim();
+        const transliteratedText = (item.dataset.transliteratedText || '').trim();
+
+        if (transliteratedText !== '') {
+            return transliteratedText;
+        }
+
+        if (originalText !== '') {
+            return originalText;
+        }
+
+        return 'Пустая строка';
+    }
+
+    function createSongLineTimingRangeText(item) {
+        const startInput = findSongLineTimingStartInput(item);
+        const endInput = findSongLineTimingEndInput(item);
+        const startValue = startInput === null ? '' : startInput.value.trim();
+        const endValue = endInput === null ? '' : endInput.value.trim();
+
+        if (startValue === '' && endValue === '') {
+            return 'ожидает старта';
+        }
+
+        if (startValue !== '' && endValue === '') {
+            return formatSongLineTimingMs(Number(startValue)) + ' - ...';
+        }
+
+        if (startValue === '') {
+            return '... - ' + formatSongLineTimingMs(Number(endValue));
+        }
+
+        return formatSongLineTimingMs(Number(startValue)) + ' - ' + formatSongLineTimingMs(Number(endValue));
+    }
+
+    function scrollSongLineTimingLineIntoView(linesContainer, currentLineIndex) {
+        const lineIndex = Math.min(currentLineIndex, Math.max(0, linesContainer.children.length - 1));
+        const line = linesContainer.querySelector(
+            '[data-role="song-line-timing-line"][data-timing-line-index="' + String(lineIndex) + '"]',
+        );
+
+        if (line === null) {
+            return;
+        }
+
+        line.scrollIntoView({
+            block: 'center',
+            behavior: 'smooth',
+        });
+    }
+
+    function createSongLineTimingStatus(visibleItems, currentLineIndex, audio) {
+        if (visibleItems.length === 0) {
+            return 'Нет строк';
+        }
+
+        if (currentLineIndex >= visibleItems.length) {
+            return 'Разметка завершена · ' + formatSongLineTimingMs(Math.round(audio.currentTime * 1000));
+        }
+
+        return 'Строка ' + (currentLineIndex + 1) + ' / ' + visibleItems.length
+            + ' · ' + formatSongLineTimingMs(Math.round(audio.currentTime * 1000));
+    }
+
+    function updateSongLineTimingPlayButton(playButton, audio) {
+        if (audio.paused) {
+            playButton.innerHTML = '<i class="bi bi-play-fill me-1" aria-hidden="true"></i>Запустить';
+
+            return;
+        }
+
+        playButton.innerHTML = '<i class="bi bi-pause-fill me-1" aria-hidden="true"></i>Пауза';
+    }
+
+    function updateSongLineTimingAudioSource(audio, sourceSelect) {
+        if (sourceSelect.value === '') {
+            return;
+        }
+
+        audio.pause();
+        audio.src = sourceSelect.value;
+        audio.load();
+    }
+
+    function toggleSongLineTimingPlayback(audio, tapButton) {
+        if (audio.paused) {
+            const playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(function () {});
+            }
+
+            tapButton.focus({ preventScroll: true });
+
+            return;
+        }
+
+        audio.pause();
+    }
+
+    function tapSongLineStart(songLineItems, currentLineIndex, audio, autoEndInput, history) {
+        const visibleItems = getVisibleSongLineItems(songLineItems);
+
+        if (visibleItems.length === 0) {
+            return currentLineIndex;
+        }
+
+        if (currentLineIndex >= visibleItems.length) {
+            return currentLineIndex;
+        }
+
+        const normalizedLineIndex = Math.min(currentLineIndex, visibleItems.length - 1);
+        const currentItem = visibleItems[normalizedLineIndex];
+        const startInput = findSongLineTimingStartInput(currentItem);
+
+        if (startInput === null) {
+            return normalizedLineIndex;
+        }
+
+        const previousItem = visibleItems[normalizedLineIndex - 1] || null;
+        const previousEndInput = autoEndInput !== null && autoEndInput.checked && previousItem !== null
+            ? findSongLineTimingEndInput(previousItem)
+            : null;
+        const timingValue = String(Math.max(0, Math.round(audio.currentTime * 1000)));
+
+        history.push({
+            lineIndex: normalizedLineIndex,
+            startInput: startInput,
+            previousStartValue: startInput.value,
+            previousEndInput: previousEndInput,
+            previousEndValue: previousEndInput === null ? null : previousEndInput.value,
+        });
+
+        setSongLineTimingInputValue(startInput, timingValue);
+
+        if (previousEndInput !== null) {
+            setSongLineTimingInputValue(previousEndInput, timingValue);
+        }
+
+        return normalizedLineIndex + 1;
+    }
+
+    function shiftSongLineTiming(songLineItems, shiftMilliseconds, currentLineIndex, history) {
+        const values = [];
+
+        getVisibleSongLineItems(songLineItems).forEach(function (item) {
+            [
+                findSongLineTimingStartInput(item),
+                findSongLineTimingEndInput(item),
+            ].forEach(function (input) {
+                if (input === null || input.value.trim() === '') {
+                    return;
+                }
+
+                const previousValue = input.value;
+                const previousMilliseconds = Number(previousValue);
+
+                if (Number.isFinite(previousMilliseconds) === false) {
+                    return;
+                }
+
+                const nextValue = String(Math.max(0, Math.round(previousMilliseconds + shiftMilliseconds)));
+
+                if (nextValue === previousValue) {
+                    return;
+                }
+
+                values.push({
+                    input: input,
+                    previousValue: previousValue,
+                });
+                setSongLineTimingInputValue(input, nextValue);
+            });
+        });
+
+        if (values.length === 0) {
+            return;
+        }
+
+        history.push({
+            lineIndex: currentLineIndex,
+            values: values,
+        });
+    }
+
+    function findSongLineTimingShiftMilliseconds(shiftInput) {
+        if (shiftInput === null) {
+            return 0;
+        }
+
+        const value = Number(shiftInput.value || '0');
+
+        if (Number.isFinite(value) === false || value <= 0) {
+            return 0;
+        }
+
+        return Math.round(value);
+    }
+
+    function undoSongLineTiming(history, currentLineIndex) {
+        const action = history.pop();
+
+        if (action === undefined) {
+            return currentLineIndex;
+        }
+
+        if (Array.isArray(action.values)) {
+            action.values.forEach(function (value) {
+                setSongLineTimingInputValue(value.input, value.previousValue);
+            });
+
+            return action.lineIndex;
+        }
+
+        setSongLineTimingInputValue(action.startInput, action.previousStartValue);
+
+        if (action.previousEndInput !== null) {
+            setSongLineTimingInputValue(action.previousEndInput, action.previousEndValue);
+        }
+
+        return action.lineIndex;
+    }
+
+    function setSongLineTimingInputValue(input, value) {
+        input.value = value === null ? '' : value;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function isSongLineTimingInteractiveTarget(target) {
+        if (target === null || typeof target.closest !== 'function') {
+            return false;
+        }
+
+        return target.closest('input, textarea, select, button, a, label') !== null;
+    }
+
+    function isSongLineTimingInput(target) {
+        if (target === null || typeof target.matches !== 'function') {
+            return false;
+        }
+
+        return target.matches([
+            '[data-role="song-line-original-text"]',
+            '[data-role="song-line-start-ms"]',
+            '[data-role="song-line-end-ms"]',
+        ].join(', '));
+    }
+
+    function formatSongLineTimingMs(milliseconds) {
+        const safeMilliseconds = Math.max(0, milliseconds);
+        const minutes = Math.floor(safeMilliseconds / 60000);
+        const seconds = Math.floor((safeMilliseconds % 60000) / 1000);
+        const ms = safeMilliseconds % 1000;
+
+        return String(minutes).padStart(2, '0')
+            + ':' + String(seconds).padStart(2, '0')
+            + '.' + String(ms).padStart(3, '0');
     }
 
     function clearSongArrangementItem(item) {

@@ -16,16 +16,16 @@ use yii\db\ActiveRecord;
  * @property int $created_at
  * @property int $updated_at
  *
- * @property TagTranslation[] $translations
+ * @property GenreTranslation[] $translations
  */
-final class Tag extends ActiveRecord
+final class Genre extends ActiveRecord
 {
-    public const PUBLICATION_STATUS_DRAFT = 'draft';
-    public const PUBLICATION_STATUS_PUBLISHED = 'published';
+    public const string PUBLICATION_STATUS_DRAFT = 'draft';
+    public const string PUBLICATION_STATUS_PUBLISHED = 'published';
 
     public static function tableName(): string
     {
-        return '{{%tag}}';
+        return '{{%genre}}';
     }
 
     public function behaviors(): array
@@ -48,14 +48,6 @@ final class Tag extends ActiveRecord
         ];
     }
 
-    public function getPublicationStatusList(): array
-    {
-        return [
-            self::PUBLICATION_STATUS_DRAFT => 'Черновик',
-            self::PUBLICATION_STATUS_PUBLISHED => 'Опубликован',
-        ];
-    }
-
     public function attributeLabels(): array
     {
         return [
@@ -68,14 +60,22 @@ final class Tag extends ActiveRecord
         ];
     }
 
+    public function getPublicationStatusList(): array
+    {
+        return [
+            self::PUBLICATION_STATUS_DRAFT => 'Черновик',
+            self::PUBLICATION_STATUS_PUBLISHED => 'Опубликован',
+        ];
+    }
+
     public function getSongs(): ActiveQuery
     {
-        return $this->hasMany(Song::class, ['id' => 'song_id'])->viaTable('{{%song_tag}}', ['tag_id' => 'id']);
+        return $this->hasMany(Song::class, ['id' => 'song_id'])->viaTable('{{%song_genre}}', ['genre_id' => 'id']);
     }
 
     public function getTranslations(): ActiveQuery
     {
-        return $this->hasMany(TagTranslation::class, ['tag_id' => 'id']);
+        return $this->hasMany(GenreTranslation::class, ['genre_id' => 'id']);
     }
 
     public function getNameByLanguageId(int $languageId): string

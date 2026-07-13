@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\presenters\ArtistPresenter;
+use common\app\WebApplication;
+use common\components\storage\StorageInterface;
 use common\models\Artist;
 use yii\db\ActiveQuery;
 use yii\web\NotFoundHttpException;
@@ -20,6 +22,7 @@ final class ArtistController extends JsonRestController
         $total = (int) (clone $query)->count();
         $artists = $query
             ->with([
+                'artistImages.mediaAsset',
                 'translations.language',
             ])
             ->orderBy(['id' => SORT_ASC])
@@ -54,6 +57,7 @@ final class ArtistController extends JsonRestController
     {
         $artist = $this->findPublishedArtistsQuery()
             ->with([
+                'artistImages.mediaAsset',
                 'translations.language',
                 'recordings.song.translations.language',
             ])
@@ -101,7 +105,7 @@ final class ArtistController extends JsonRestController
 
     protected function getArtistPresenter(): ArtistPresenter
     {
-        return new ArtistPresenter();
+        return new ArtistPresenter($this->getStorage());
     }
 
     protected function getRequest(): Request
@@ -110,5 +114,13 @@ final class ArtistController extends JsonRestController
         $request = \Yii::$app->request;
 
         return $request;
+    }
+
+    protected function getStorage(): StorageInterface
+    {
+        /** @var WebApplication $app */
+        $app = \Yii::$app;
+
+        return $app->storage;
     }
 }

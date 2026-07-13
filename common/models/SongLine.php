@@ -40,10 +40,6 @@ final class SongLine extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['song_id', 'section_number', 'sort_order', 'start_ms', 'end_ms'], 'integer'],
-            [['original_text'], 'string'],
-            [['section_code'], 'string', 'max' => 32],
-            [['original_text'], 'validateOriginalText'],
             [
                 ['section_code', 'section_number', 'sort_order', 'start_ms', 'end_ms'],
                 'filter',
@@ -55,6 +51,12 @@ final class SongLine extends ActiveRecord
                     return $value;
                 },
             ],
+            [['song_id', 'section_number', 'sort_order'], 'integer'],
+            [['start_ms', 'end_ms'], 'integer', 'min' => 0],
+            [['original_text'], 'string'],
+            [['section_code'], 'string', 'max' => 32],
+            [['original_text'], 'validateOriginalText'],
+            [['end_ms'], 'validateEndMs'],
             [['song_id'], 'exist', 'skipOnEmpty' => true, 'targetClass' => Song::class, 'targetAttribute' => ['song_id' => 'id']],
         ];
     }
@@ -86,10 +88,34 @@ final class SongLine extends ActiveRecord
         return trim((string) $this->original_text) !== '';
     }
 
+    public function hasTiming(): bool
+    {
+        return trim((string) $this->start_ms) !== '' || trim((string) $this->end_ms) !== '';
+    }
+
     public function validateOriginalText(string $attribute): void
     {
-        if ($this->hasContent() && trim((string) $this->$attribute) === '') {
-            $this->addError($attribute, 'Укажите исходную строку песни.');
+        if ($this->hasContent() || $this->hasTiming() === false) {
+            return;
         }
+
+        $this->addError($attribute, 'Укажите исходную строку песни.');
+    }
+
+    public function validateEndMs(string $attribute): void
+    {
+        if ($this->start_ms === null || $this->end_ms === null) {
+            return;
+        }
+
+        if ($this->hasErrors('start_ms') || $this->hasErrors($attribute)) {
+            return;
+        }
+
+        if ((int) $this->end_ms >= (int) $this->start_ms) {
+            return;
+        }
+
+        $this->addError($attribute, 'Финиш должен быть больше или равен старту.');
     }
 }

@@ -23,8 +23,10 @@ use yii\db\ActiveRecord;
  *
  * @property Language $originalLanguage
  * @property MediaAsset|null $coverMediaAsset
+ * @property Genre[] $genres
  * @property SongArrangement[] $songArrangements
  * @property SongLine[] $songLines
+ * @property Tag[] $tags
  * @property SongTitleTransliteration[] $titleTransliterations
  * @property SongTranslation[] $translations
  * @property Recording[] $recordings
@@ -127,6 +129,13 @@ final class Song extends ActiveRecord
         return $this->hasMany(Recording::class, ['song_id' => 'id']);
     }
 
+    public function getGenres(): ActiveQuery
+    {
+        return $this->hasMany(Genre::class, ['id' => 'genre_id'])
+            ->viaTable('{{%song_genre}}', ['song_id' => 'id'])
+            ->orderBy(['default_name' => SORT_ASC, 'id' => SORT_ASC]);
+    }
+
     /**
      * @return array<int, string>
      */
@@ -191,7 +200,9 @@ final class Song extends ActiveRecord
 
     public function getTags(): ActiveQuery
     {
-        return $this->hasMany(Tag::class, ['id' => 'tag_id'])->viaTable('{{%song_tag}}', ['song_id' => 'id']);
+        return $this->hasMany(Tag::class, ['id' => 'tag_id'])
+            ->viaTable('{{%song_tag}}', ['song_id' => 'id'])
+            ->orderBy(['default_name' => SORT_ASC, 'id' => SORT_ASC]);
     }
 
     public function getTitleTransliterations(): ActiveQuery

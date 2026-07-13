@@ -8,6 +8,7 @@ declare(strict_types=1);
 use backend\assets\SongEditorAsset;
 use backend\assets\RecordingMediaAsset;
 use backend\models\RecordingMediaUploadForm;
+use common\services\GeorgianTransliterator;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
@@ -27,6 +28,10 @@ $songTranslationLanguageItems = $formModel->getSongTranslationLanguageItems();
 $initialSongTranslationLanguageId = $formModel->getInitialSongTranslationLanguageId();
 $songTextLanguageItems = $formModel->getSongTextLanguageItems();
 $initialSongTextLanguageId = $formModel->getInitialSongTextLanguageId();
+$songTagItems = $formModel->getTagItems();
+$songGenreItems = $formModel->getGenreItems();
+$songTagSelectSize = max(4, min(8, count($songTagItems)));
+$songGenreSelectSize = max(4, min(8, count($songGenreItems)));
 $songArrangementModels = $formModel->getSongArrangementModels();
 $songArrangementVisibleIndexes = $formModel->getSongArrangementVisibleIndexes();
 $songLineModels = $formModel->getSongLineModels();
@@ -36,6 +41,8 @@ $songLineTranslationFlatModels = $formModel->getSongLineTranslationFlatModels();
 $recordingModels = $formModel->getRecordingModels();
 $recordingVisibleIndexes = $formModel->getRecordingVisibleIndexes();
 $recordingArtistFlatModels = $formModel->getRecordingArtistFlatModels();
+$songLineTimingAudioItems = [];
+$songLineTransliterator = new GeorgianTransliterator();
 $preloadAllSongTranslationPanels = \Yii::$app->request->isPost;
 $preloadAllSongTextPanels = \Yii::$app->request->isPost;
 $renderAllSongArrangementModels = \Yii::$app->request->isPost;
@@ -64,6 +71,21 @@ $recordingMediaUploadTemplateForm = new RecordingMediaUploadForm();
 $nextSongArrangementIndex = $songArrangementModels === [] ? 0 : max(array_keys($songArrangementModels)) + 1;
 $nextRecordingIndex = $recordingModels === [] ? 0 : max(array_keys($recordingModels)) + 1;
 $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(array_keys($recordingArtistFlatModels)) + 1;
+
+foreach ($recordingModels as $recordingIndex => $recordingModel) {
+    $audioMediaAsset = $recordingModel->getAudioMediaAsset();
+
+    if ($audioMediaAsset === null) {
+        continue;
+    }
+
+    $recordingTitle = trim((string) $recordingModel->default_title);
+    $songLineTimingAudioItems[] = [
+        'label' => $recordingTitle === '' ? 'Запись ' . ((int) $recordingIndex + 1) : $recordingTitle,
+        'mimeType' => $audioMediaAsset->mime_type,
+        'url' => \Yii::$app->storage->getPublicUrl($audioMediaAsset->path),
+    ];
+}
 ?>
 <div
     class="song-form"
@@ -98,6 +120,27 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
                 </div>
 
                 <?= $form->field($song, 'publication_status')->dropDownList($formModel->getPublicationStatusItems()) ?>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <?= Html::hiddenInput(Html::getInputName($formModel, 'tagIds') . '[]', '') ?>
+                        <?= $form->field($formModel, 'tagIds')->dropDownList($songTagItems, [
+                            'class' => 'form-select',
+                            'disabled' => $songTagItems === [],
+                            'multiple' => true,
+                            'size' => $songTagSelectSize,
+                        ])->hint($songTagItems === [] ? 'Сначала добавьте теги в справочник.' : 'Можно выбрать несколько тегов.') ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= Html::hiddenInput(Html::getInputName($formModel, 'genreIds') . '[]', '') ?>
+                        <?= $form->field($formModel, 'genreIds')->dropDownList($songGenreItems, [
+                            'class' => 'form-select',
+                            'disabled' => $songGenreItems === [],
+                            'multiple' => true,
+                            'size' => $songGenreSelectSize,
+                        ])->hint($songGenreItems === [] ? 'Сначала добавьте жанры в справочник.' : 'Можно выбрать несколько жанров.') ?>
+                    </div>
+                </div>
 
                 <div class="border rounded p-3 mb-3">
                     <h3 class="h6 mb-3">Обложка песни</h3>
@@ -272,6 +315,21 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
                         </div>
                     </div>
 
+                    <?php if ($songLineTimingAudioItems !== []): ?>
+                        <div class="border rounded p-3 mb-3">
+                            <?= Html::button('<i class="bi bi-music-note-list me-1" aria-hidden="true"></i>Открыть разметку таймингов', [
+                                'class' => 'btn btn-primary',
+                                'type' => 'button',
+                                'data-bs-toggle' => 'modal',
+                                'data-bs-target' => '#song-line-timing-modal',
+                            ]) ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="alert alert-light border mb-3">
+                            Для разметки таймингов нужен сохранённый аудиофайл.
+                        </div>
+                    <?php endif; ?>
+
                     <div
                         data-role="song-line-items"
                         data-next-line-index="<?= Html::encode((string) count($songLineModels)) ?>"
@@ -299,6 +357,7 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
                                 'translationModels' => $translationModels,
                                 'translationIndexes' => $translationIndexes,
                                 'languageLabels' => $languageLabels,
+                                'transliteratedText' => $songLineTransliterator->transliterateByLanguageCode((string) $songLineModels[$lineIndex]->original_text, 'ru'),
                                 'isHidden' => $isVisibleSongLine === false,
                             ]) ?>
                         <?php endforeach; ?>
@@ -318,6 +377,7 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
                             'translationModels' => $songLineTemplateTranslationModels,
                             'translationIndexes' => $songLineTemplateTranslationIndexes,
                             'languageLabels' => $languageLabels,
+                            'transliteratedText' => '',
                             'isHidden' => false,
                         ]) ?>
                     </template>
@@ -325,6 +385,137 @@ $nextRecordingArtistFlatIndex = $recordingArtistFlatModels === [] ? 0 : max(arra
             </div>
         </div>
     </div>
+
+    <?php if ($songLineTimingAudioItems !== []): ?>
+        <?php $firstSongLineTimingAudioItem = $songLineTimingAudioItems[0]; ?>
+        <div
+            class="modal fade"
+            id="song-line-timing-modal"
+            tabindex="-1"
+            aria-labelledby="song-line-timing-modal-title"
+            aria-hidden="true"
+            data-role="song-line-timing-editor"
+        >
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="song-line-timing-modal-title">Разметка таймингов строк</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="song-line-timing-sticky border-bottom p-3">
+                            <div class="row g-3 align-items-end">
+                                <?php if (count($songLineTimingAudioItems) > 1): ?>
+                                    <div class="col-lg-4">
+                                        <?= Html::label('Запись', 'song-line-timing-audio-source', ['class' => 'form-label']) ?>
+                                        <select
+                                            id="song-line-timing-audio-source"
+                                            class="form-select"
+                                            data-role="song-line-timing-audio-source"
+                                        >
+                                            <?php foreach ($songLineTimingAudioItems as $audioItem): ?>
+                                                <option
+                                                    value="<?= Html::encode($audioItem['url']) ?>"
+                                                    data-mime-type="<?= Html::encode((string) $audioItem['mimeType']) ?>"
+                                                >
+                                                    <?= Html::encode($audioItem['label']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="<?= count($songLineTimingAudioItems) > 1 ? 'col-lg-8' : 'col-lg-12' ?>">
+                                    <audio controls preload="metadata" class="w-100" data-role="song-line-timing-audio">
+                                        <source
+                                            src="<?= Html::encode($firstSongLineTimingAudioItem['url']) ?>"
+                                            <?= $firstSongLineTimingAudioItem['mimeType'] === null ? '' : 'type="' . Html::encode($firstSongLineTimingAudioItem['mimeType']) . '"' ?>
+                                        >
+                                    </audio>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3 mt-3">
+                                <div class="btn-group flex-wrap" role="group">
+                                    <?= Html::button('<i class="bi bi-play-fill me-1" aria-hidden="true"></i>Запустить', [
+                                        'class' => 'btn btn-outline-secondary',
+                                        'type' => 'button',
+                                        'data-role' => 'song-line-timing-play',
+                                    ]) ?>
+                                    <?= Html::button('<i class="bi bi-record-circle me-1" aria-hidden="true"></i>Поставить старт', [
+                                        'class' => 'btn btn-primary',
+                                        'type' => 'button',
+                                        'data-role' => 'song-line-timing-tap',
+                                    ]) ?>
+                                    <?= Html::button('<i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>Отменить', [
+                                        'class' => 'btn btn-outline-secondary',
+                                        'type' => 'button',
+                                        'data-role' => 'song-line-timing-undo',
+                                        'disabled' => true,
+                                    ]) ?>
+                                </div>
+
+                                <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+                                    <div class="input-group input-group-sm song-line-timing-shift">
+                                        <span class="input-group-text">Сдвиг, мс</span>
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            min="1"
+                                            step="1"
+                                            value="100"
+                                            data-role="song-line-timing-shift-ms"
+                                        >
+                                        <?= Html::button('<i class="bi bi-arrow-left-short" aria-hidden="true"></i>', [
+                                            'class' => 'btn btn-outline-secondary',
+                                            'type' => 'button',
+                                            'title' => 'Сдвинуть все тайминги назад',
+                                            'data-role' => 'song-line-timing-shift-backward',
+                                        ]) ?>
+                                        <?= Html::button('<i class="bi bi-arrow-right-short" aria-hidden="true"></i>', [
+                                            'class' => 'btn btn-outline-secondary',
+                                            'type' => 'button',
+                                            'title' => 'Сдвинуть все тайминги вперёд',
+                                            'data-role' => 'song-line-timing-shift-forward',
+                                        ]) ?>
+                                    </div>
+                                    <div class="form-check mb-0">
+                                        <input
+                                            type="checkbox"
+                                            class="form-check-input"
+                                            id="song-line-timing-auto-end"
+                                            data-role="song-line-timing-auto-end"
+                                            checked
+                                        >
+                                        <?= Html::label('Авто end_ms', 'song-line-timing-auto-end', ['class' => 'form-check-label']) ?>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <?= Html::label('Скорость', 'song-line-timing-playback-rate', ['class' => 'form-label mb-0']) ?>
+                                        <select
+                                            id="song-line-timing-playback-rate"
+                                            class="form-select form-select-sm song-line-timing-rate"
+                                            data-role="song-line-timing-playback-rate"
+                                        >
+                                            <option value="0.5">0.5x</option>
+                                            <option value="0.75">0.75x</option>
+                                            <option value="1" selected>1x</option>
+                                            <option value="1.25">1.25x</option>
+                                        </select>
+                                    </div>
+                                    <div class="song-line-timing-status" data-role="song-line-timing-status"></div>
+                                    <?= Html::submitButton('<i class="bi bi-check2 me-1" aria-hidden="true"></i>Сохранить тайминги', [
+                                        'class' => 'btn btn-success',
+                                        'data-role' => 'song-line-timing-save',
+                                    ]) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="song-line-timing-lines p-3" data-role="song-line-timing-lines"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="border rounded p-3 mb-4">
         <h2 class="h4">Аранжировки и аккорды</h2>

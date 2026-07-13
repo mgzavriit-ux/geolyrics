@@ -7,6 +7,8 @@ namespace api\modules\v1\presenters;
 use common\components\storage\StorageInterface;
 use common\models\Artist;
 use common\models\ArtistTranslation;
+use common\models\Genre;
+use common\models\GenreTranslation;
 use common\models\Language;
 use common\models\MediaAsset;
 use common\models\Recording;
@@ -18,13 +20,19 @@ use common\models\SongLine;
 use common\models\SongLineTranslation;
 use common\models\SongTranslation;
 use common\models\Tag;
+use common\models\TagTranslation;
+use common\services\GeorgianTransliterator;
 
 final class SongPresenter
 {
+    private readonly GeorgianTransliterator $transliterator;
+
     public function __construct(
         private readonly StorageInterface $storage,
         private readonly bool $hasTitleTransliterations = true,
+        GeorgianTransliterator | null $transliterator = null,
     ) {
+        $this->transliterator = $transliterator ?? new GeorgianTransliterator();
     }
 
     public function presentListItem(Song $song): array
@@ -39,6 +47,7 @@ final class SongPresenter
             'translations' => $this->presentSongTranslations($song),
             'cover' => $this->presentMediaAsset($song->coverMediaAsset),
             'artists' => $this->presentArtists($song),
+            'genres' => $this->presentGenres($song),
             'tags' => $this->presentTags($song),
             'catalog' => $this->presentCatalogMeta($song),
         ];
@@ -54,8 +63,11 @@ final class SongPresenter
             'publishedAt' => $song->published_at,
             'originalLanguage' => $this->presentLanguage($song->originalLanguage),
             'translations' => $this->presentSongTranslations($song),
+            'transliterations' => $this->presentTransliterations($song->default_title),
             'cover' => $this->presentMediaAsset($song->coverMediaAsset),
             'artists' => $this->presentArtists($song),
+            'genres' => $this->presentGenres($song),
+            'tags' => $this->presentTags($song),
             'lyrics' => $this->presentLyrics($song),
             'arrangements' => $this->presentSongArrangements($song),
             'recordings' => $this->presentRecordings($song),
@@ -100,8 +112,11 @@ final class SongPresenter
 
             $lines[] = [
                 'sortOrder' => $songLine->sort_order,
+                'startMs' => $songLine->start_ms === null ? null : (int) $songLine->start_ms,
+                'endMs' => $songLine->end_ms === null ? null : (int) $songLine->end_ms,
                 'originalText' => $songLine->original_text,
                 'translations' => $translations,
+                'transliterations' => $this->presentTransliterations($songLine->original_text),
             ];
         }
 
@@ -168,10 +183,94 @@ final class SongPresenter
         return [
             'id' => $tag->id,
             'slug' => $tag->slug,
-            'name' => [
-                'default' => $tag->default_name,
-            ],
+            'name' => $this->presentCatalogName($tag->default_name, $tag->translations),
+            'description' => $this->presentCatalogDescriptions($tag->translations),
         ];
+    }
+
+    private function presentGenreItem(Genre $genre): array
+    {
+        return [
+            'id' => $genre->id,
+            'slug' => $genre->slug,
+            'name' => $this->presentCatalogName($genre->default_name, $genre->translations),
+            'description' => $this->presentCatalogDescriptions($genre->translations),
+        ];
+    }
+
+    /**
+     * @param GenreTranslation[]|TagTranslation[] $translations
+     * @return array<string, string>
+     */
+    private function presentCatalogName(string $defaultName, array $translations): array
+    {
+        return array_merge(
+            ['default' => $defaultName],
+            $this->presentCatalogNameTranslations($translations),
+        );
+    }
+
+    /**
+     * @param GenreTranslation[]|TagTranslation[] $translations
+     * @return array<string, string>
+     */
+    private function presentCatalogNameTranslations(array $translations): array
+    {
+        $items = [];
+
+        foreach ($translations as $translation) {
+            $language = $translation->language;
+            $name = trim((string) $translation->name);
+
+            if ($language === null || $name === '') {
+                continue;
+            }
+
+            $items[$language->code] = $name;
+        }
+
+        ksort($items);
+
+        return $items;
+    }
+
+    /**
+     * @param GenreTranslation[]|TagTranslation[] $translations
+     * @return array<string, string>
+     */
+    private function presentCatalogDescriptions(array $translations): array
+    {
+        $items = [];
+
+        foreach ($translations as $translation) {
+            $language = $translation->language;
+            $description = trim((string) $translation->description);
+
+            if ($language === null || $description === '') {
+                continue;
+            }
+
+            $items[$language->code] = $description;
+        }
+
+        ksort($items);
+
+        return $items;
+    }
+
+    private function presentGenres(Song $song): array
+    {
+        $genres = [];
+
+        foreach ($song->genres as $genre) {
+            if ($genre->publication_status !== Genre::PUBLICATION_STATUS_PUBLISHED) {
+                continue;
+            }
+
+            $genres[] = $this->presentGenreItem($genre);
+        }
+
+        return $genres;
     }
 
     private function presentTags(Song $song): array
@@ -196,6 +295,7 @@ final class SongPresenter
 
         return [
             'durationMs' => $mainRecording?->duration_ms,
+            'audio' => $this->presentMediaAsset($this->findRecordingMediaAsset($recordings, RecordingMedia::ROLE_AUDIO)),
             'hasAudio' => $this->hasRecordingMedia($recordings, RecordingMedia::ROLE_AUDIO),
             'hasVideo' => $this->hasRecordingMedia($recordings, RecordingMedia::ROLE_VIDEO),
             'hasChords' => count($song->songArrangements) > 0,
@@ -243,6 +343,26 @@ final class SongPresenter
         foreach ($artist->artistImages as $artistImage) {
             if ($artistImage->mediaAsset !== null) {
                 return $this->storage->getPublicUrl($artistImage->mediaAsset->path);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Recording[] $recordings
+     */
+    private function findRecordingMediaAsset(array $recordings, string $role): MediaAsset | null
+    {
+        foreach ($recordings as $recording) {
+            foreach ($recording->recordingMediaEntries as $recordingMedia) {
+                if ($recordingMedia->role !== $role) {
+                    continue;
+                }
+
+                if ($recordingMedia->mediaAsset instanceof MediaAsset) {
+                    return $recordingMedia->mediaAsset;
+                }
             }
         }
 
@@ -393,11 +513,23 @@ final class SongPresenter
                 'originalKey' => $songArrangement->original_key,
                 'capo' => $songArrangement->capo,
                 'sortOrder' => $songArrangement->sort_order,
+                'transliterations' => $this->presentTransliterations($songArrangement->source_text),
                 'parsedPayload' => $songArrangement->getParsedPayload(),
             ];
         }
 
         return $arrangements;
+    }
+
+    /**
+     * @return array{cyrillic:string, latin:string}
+     */
+    private function presentTransliterations(string $text): array
+    {
+        return [
+            'cyrillic' => $this->transliterator->transliterateByLanguageCode($text, 'ru'),
+            'latin' => $this->transliterator->transliterateByLanguageCode($text, 'en'),
+        ];
     }
 
     /**
